@@ -4,13 +4,12 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    matrix_source.cpp \
     functions_source.cpp \
-    get_from_std_istram.cpp \
-    matrix_main.cpp
+    matrix_main.cpp \
+    get_from_std_istream.cpp
 
 HEADERS += \
     functions_headers.h \
-    matrix_headers.h \
-    get_from_std_istram.h \
-    stream_defines.h
+    stream_defines.h \
+    get_from_std_istream.h \
+    matrix.h
