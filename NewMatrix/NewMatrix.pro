@@ -5,8 +5,7 @@ CONFIG -= qt
 
 SOURCES += \
     functions_source.cpp \
-    matrix_main.cpp \
-    get_from_std_istream.cpp
+    matrix_main.cpp
 
 HEADERS += \
     functions_headers.h \

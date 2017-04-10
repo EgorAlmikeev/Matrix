@@ -10,7 +10,8 @@ int main()
 
     Matrix<int> matrix_a("A", 3, 3);
 
-    matrix_a.show();
+    matrix_a.SetElements();
+    matrix_a.Show();
 
     return 0;
 }
