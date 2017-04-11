@@ -25,6 +25,9 @@ public :
     void SetElements();
 
     Matrix operator + (const Matrix& addable_matrix);
+    Matrix operator - (const Matrix& subtrahend_matrix);
+    Matrix operator * (const Matrix& multiplier_matrix);
+
     Matrix& operator = (const Matrix& equalable_matrix);
 
 private :
@@ -36,12 +39,43 @@ private :
     TypeOfMatrixElements **elements;
 
     short GetLongestElementSize();
+
+    enum errorflag {add, deduct, multiplication, equal};
+
+    static inline void errormsg(const Matrix& culprit, errorflag flag);
+    static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag);
 };
+
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& culpit, errorflag flag)
+{
+
+}
+
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& first_culprit, const Matrix<TypeOfMatrixElements>& second_culpit , errorflag flag)
+{
+    string what_happened;
+
+    switch(flag)
+    {
+    case add : what_happened = " CAN NOT ADD "; break;
+    case deduct : what_happened = " CAN NOT DEDUCT "; break;
+    case multiplication : what_happened = " CAN NOT MULTIPLICATE "; break;
+    case equal : what_happened = " CAN NOT EQUAL "; break;
+    }
+
+    STD_ERROR_STREAM << "\n#error :" << what_happened << "\"" << first_culprit.name << "\""
+                     << "[" << first_culprit.rows << "][" << first_culprit.columns << "] and "
+                     << "\"" << second_culpit.name << "\""
+                     << "[" << second_culpit.rows << "][" << second_culpit.columns << "]\n";
+    exit(1);
+}
 
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>::Matrix()
 {
-    name = "Empty";
+    name = "EMPTY";
     rows = 0;
     columns = 0;
 
@@ -130,7 +164,7 @@ void Matrix<TypeOfMatrixElements>::Show()
         STD_OUT_STREAM << endl;
         for(j = 0; j < columns; ++j)
         {
-            print_simbol(' ', spaces_quantity);
+            print(' ', spaces_quantity);
             STD_OUT_STREAM << elements[i][j];
         }
     }
@@ -164,7 +198,7 @@ void Matrix<TypeOfMatrixElements>::SetElements()
     }
 }
 
-template<class TypeOfMatrixElements>
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Matrix<TypeOfMatrixElements>& addable_matrix)
 {
     if(rows == addable_matrix.rows && columns == addable_matrix.columns)
@@ -178,16 +212,52 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Mat
     }
     else
     {
-        STD_ERROR_STREAM << "\n#error : Can not add \"" << name << "\""
-                         << "[" << rows << "][" << columns << "] and "
-                         << "\"" << addable_matrix.name << "\""
-                         << "[" << addable_matrix.rows << "][" << addable_matrix.columns << "]"
-                         << " : Defferent sizes\n";
-        exit(1);
+        Matrix<TypeOfMatrixElements>::errormsg(*this, addable_matrix, errorflag::add);
     }
 }
 
-template<class TypeOfMatrixElements>
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (const Matrix<TypeOfMatrixElements>& subtrahend_matrix)
+{
+    if(rows == subtrahend_matrix.rows && columns == subtrahend_matrix.columns)
+    {
+        Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
+        register int i, j;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                temp.elements[i][j] = elements[i][j] - subtrahend_matrix.elements[i][j];
+        return temp;
+    }
+    else
+    {
+        Matrix<TypeOfMatrixElements>::errormsg(*this, subtrahend_matrix, errorflag::deduct);
+    }
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (const Matrix<TypeOfMatrixElements>& multiplier_matrix)
+{
+    if(columns == multiplier_matrix.rows)
+    {
+        Matrix<TypeOfMatrixElements> temp("TEMP", rows, multiplier_matrix.columns);
+        register int i, j, k;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < multiplier_matrix.columns; ++j)
+            {
+                TypeOfMatrixElements sum = static_cast<TypeOfMatrixElements>(0);
+                for(k = 0; k < rows; ++k)
+                    sum += elements[i][k] * multiplier_matrix.elements[k][i];
+                temp.elements[i][j] = sum;
+            }
+        return temp;
+    }
+    else
+    {
+        Matrix<TypeOfMatrixElements>::errormsg(*this, multiplier_matrix, errorflag::multiplication);
+    }
+}
+
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Matrix<TypeOfMatrixElements>& equalable_matrix)
 {
     if(rows == equalable_matrix.rows && columns == equalable_matrix.columns)
@@ -200,13 +270,9 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
     }
     else
     {
-        STD_ERROR_STREAM << "\n#error : Can not equal \"" << name << "\""
-                         << "[" << rows << "][" << columns << "]"
-                         << " and \"" << equalable_matrix.name << "\""
-                         << "[" << equalable_matrix.rows << "][" << equalable_matrix.columns << "]"
-                         << " : Different sizes\n";
-        exit(1);
+        Matrix<TypeOfMatrixElements>::errormsg(*this, equalable_matrix, errorflag::equal);
     }
 }
+
 
 #endif // MATRIX_H
