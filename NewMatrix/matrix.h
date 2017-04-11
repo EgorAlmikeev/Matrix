@@ -15,6 +15,7 @@ class Matrix
 public :
 
     Matrix();
+    Matrix(Matrix& copying_matrix);
     Matrix(string _name, int _rows, int _columns);
 
     ~Matrix();
@@ -22,6 +23,9 @@ public :
     void Show();
 
     void SetElements();
+
+    Matrix operator + (const Matrix& addable_matrix);
+    Matrix& operator = (const Matrix& equalable_matrix);
 
 private :
 
@@ -45,11 +49,29 @@ Matrix<TypeOfMatrixElements>::Matrix()
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements>::Matrix(string _name, int _rows, int _columns) : name(_name), rows(_rows), columns(_columns)
+Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matrix)
 {
-    elements = new TypeOfMatrixElements* [rows];
+    rows = copying_matrix.rows;
+    columns = copying_matrix.columns;
 
     register int i, j;
+
+    elements = new TypeOfMatrixElements* [rows];
+
+    for(i = 0; i < rows; ++i)
+        elements[i] = new TypeOfMatrixElements[columns];
+
+    for(i = 0; i < rows; ++i)
+        for(j = 0; j < columns; ++j)
+            elements[i][j] = copying_matrix.elements[i][j];
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>::Matrix(string _name, int _rows, int _columns) : name(_name), rows(_rows), columns(_columns)
+{
+    register int i, j;
+
+    elements = new TypeOfMatrixElements* [rows];
 
     for(i = 0; i < rows; ++i)
         elements[i] = new TypeOfMatrixElements[columns];
@@ -134,11 +156,56 @@ void Matrix<TypeOfMatrixElements>::SetElements()
             }
             catch(GetFormStdIstream<int>::GetFromStdIstreamException)
             {
-                STD_WARNING_STREAM << "\n#error : Incorrect input\n";
+                STD_ERROR_STREAM << "\n#error : Incorrect input\n";
             }
         }
         ++i;
         j = 0;
+    }
+}
+
+template<class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Matrix<TypeOfMatrixElements>& addable_matrix)
+{
+    if(rows == addable_matrix.rows && columns == addable_matrix.columns)
+    {
+        Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
+        register int i, j;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                temp.elements[i][j] = elements[i][j] + addable_matrix.elements[i][j];
+        return temp;
+    }
+    else
+    {
+        STD_ERROR_STREAM << "\n#error : Can not add \"" << name << "\""
+                         << "[" << rows << "][" << columns << "] and "
+                         << "\"" << addable_matrix.name << "\""
+                         << "[" << addable_matrix.rows << "][" << addable_matrix.columns << "]"
+                         << " : Defferent sizes\n";
+        exit(1);
+    }
+}
+
+template<class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Matrix<TypeOfMatrixElements>& equalable_matrix)
+{
+    if(rows == equalable_matrix.rows && columns == equalable_matrix.columns)
+    {
+        register int i, j;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                elements[i][j] = equalable_matrix.elements[i][j];
+        return *this;
+    }
+    else
+    {
+        STD_ERROR_STREAM << "\n#error : Can not equal \"" << name << "\""
+                         << "[" << rows << "][" << columns << "]"
+                         << " and \"" << equalable_matrix.name << "\""
+                         << "[" << equalable_matrix.rows << "][" << equalable_matrix.columns << "]"
+                         << " : Different sizes\n";
+        exit(1);
     }
 }
 
