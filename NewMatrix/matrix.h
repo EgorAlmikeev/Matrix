@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "stream_defines.h"
 #include "functions_headers.h"
 #include "get_from_std_istream.h"
@@ -46,31 +47,7 @@ private :
     static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag);
 };
 
-template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& culpit, errorflag flag)
-{
-
-}
-
-template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& first_culprit, const Matrix<TypeOfMatrixElements>& second_culpit , errorflag flag)
-{
-    string what_happened;
-
-    switch(flag)
-    {
-    case add : what_happened = " CAN NOT ADD "; break;
-    case deduct : what_happened = " CAN NOT DEDUCT "; break;
-    case multiplication : what_happened = " CAN NOT MULTIPLICATE "; break;
-    case equal : what_happened = " CAN NOT EQUAL "; break;
-    }
-
-    STD_ERROR_STREAM << "\n#error :" << what_happened << "\"" << first_culprit.name << "\""
-                     << "[" << first_culprit.rows << "][" << first_culprit.columns << "] and "
-                     << "\"" << second_culpit.name << "\""
-                     << "[" << second_culpit.rows << "][" << second_culpit.columns << "]\n";
-    exit(1);
-}
+//constructors & destructors
 
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>::Matrix()
@@ -126,6 +103,40 @@ Matrix<TypeOfMatrixElements>::~Matrix()
     delete [] elements;
 }
 
+//constructors & destructors END
+
+//functions
+
+//functions/static
+
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& culpit, errorflag flag)
+{
+
+}
+
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& first_culprit, const Matrix<TypeOfMatrixElements>& second_culpit , errorflag flag)
+{
+    string what_happened;
+
+    switch(flag)
+    {
+    case add : what_happened = " CAN NOT ADD "; break;
+    case deduct : what_happened = " CAN NOT DEDUCT "; break;
+    case multiplication : what_happened = " CAN NOT MULTIPLICATE "; break;
+    case equal : what_happened = " CAN NOT EQUAL "; break;
+    }
+
+    STD_ERROR_STREAM << "\n#error :" << what_happened << "\"" << first_culprit.name << "\""
+                     << "[" << first_culprit.rows << "][" << first_culprit.columns << "] and "
+                     << "\"" << second_culpit.name << "\""
+                     << "[" << second_culpit.rows << "][" << second_culpit.columns << "]\n";
+    exit(1);
+}
+
+//functions/static END
+
 template <class TypeOfMatrixElements>
 short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
 {
@@ -149,23 +160,22 @@ short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
         }
 
     longest_element_size += (sign) ? 1 : 0;
-    return longest_element_size;
+    return longest_element_size + 1;
 }
 
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::Show()
 {
-    STD_OUT_STREAM << "\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] : ";
+    STD_OUT_STREAM << "\n\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] : ";
 
     register int i, j;
-    short spaces_quantity = this->GetLongestElementSize();
+    short printable_size = this->GetLongestElementSize();
 
     for(i = 0; i < rows; ++i) {
         STD_OUT_STREAM << endl;
         for(j = 0; j < columns; ++j)
         {
-            print(' ', spaces_quantity);
-            STD_OUT_STREAM << elements[i][j];
+            STD_OUT_STREAM << setw(printable_size) << elements[i][j];
         }
     }
 }
@@ -197,6 +207,10 @@ void Matrix<TypeOfMatrixElements>::SetElements()
         j = 0;
     }
 }
+
+//functios END
+
+//operators
 
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Matrix<TypeOfMatrixElements>& addable_matrix)
@@ -274,5 +288,6 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
     }
 }
 
+//operators END
 
 #endif // MATRIX_H
