@@ -18,7 +18,7 @@ int main()
     matrix_a.Show();
     matrix_b.Show();
 
-    matrix_c = matrix_a * (matrix_b - matrix_a);
+    matrix_c = matrix_a * matrix_b;
 
     matrix_c.Show();
 

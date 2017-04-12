@@ -30,6 +30,7 @@ public :
     Matrix operator * (const Matrix& multiplier_matrix);
 
     Matrix& operator = (const Matrix& equalable_matrix);
+    Matrix& operator = (const TypeOfMatrixElements& equalable_element);
 
 private :
 
@@ -286,6 +287,16 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
     {
         Matrix<TypeOfMatrixElements>::errormsg(*this, equalable_matrix, errorflag::equal);
     }
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const TypeOfMatrixElements& equalable_element)
+{
+    register int i, j;
+    for(i = 0; i < rows; ++i)
+        for(j = 0; j < columns; ++j)
+            elements[i][j] = equalable_element;
+    return *this;
 }
 
 //operators END
