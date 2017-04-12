@@ -32,6 +32,9 @@ public :
     Matrix& operator = (const Matrix& equalable_matrix);
     Matrix& operator = (const TypeOfMatrixElements& equalable_element);
 
+    template<class Type>
+    friend Matrix<Type> operator + (const Matrix<Type>& base_matrix, const Type& addable_element);
+
 private :
 
     string name;
@@ -298,6 +301,21 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ty
             elements[i][j] = equalable_element;
     return *this;
 }
+
+//operators/friend
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator + (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& addable_element)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = base_matrix.elements[i][j] + addable_element;
+    return temp;
+}
+
+//operators/friend END
 
 //operators END
 
