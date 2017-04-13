@@ -39,6 +39,12 @@ public :
     friend Matrix<Type> operator + (const Type& addable_element, const Matrix<Type>& base_matrix);
 
     template<class Type>
+    friend Matrix<Type> operator - (const Matrix<Type>& base_matrix, const Type& deductible_element);
+
+    template<class Type>
+    friend Matrix<Type> operator - (const Type& deductible_element, const Matrix<Type>& base_matrix);
+
+    template<class Type>
     friend Matrix<Type> operator * (const Matrix<Type>& base_matrix, const Type& multiplier_element);
 
     template<class Type>
@@ -331,6 +337,28 @@ Matrix<TypeOfMatrixElements> operator + (const TypeOfMatrixElements& addable_ele
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] + addable_element;
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator - (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& deductible_element)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = base_matrix.elements[i][j] - deductible_element;
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator - (const TypeOfMatrixElements& deductible_element, const Matrix<TypeOfMatrixElements>& base_matrix)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = base_matrix.elements[i][j] - deductible_element;
     return temp;
 }
 
