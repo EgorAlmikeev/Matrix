@@ -32,23 +32,29 @@ public :
     Matrix& operator = (const Matrix& equalable_matrix);
     Matrix& operator = (const TypeOfMatrixElements& equalable_element);
 
-    template<class Type>
+    template <class Type>
     friend Matrix<Type> operator + (const Matrix<Type>& base_matrix, const Type& addable_element);
 
-    template<class Type>
+    template <class Type>
     friend Matrix<Type> operator + (const Type& addable_element, const Matrix<Type>& base_matrix);
 
-    template<class Type>
+    template <class Type>
     friend Matrix<Type> operator - (const Matrix<Type>& base_matrix, const Type& deductible_element);
 
-    template<class Type>
+    template <class Type>
     friend Matrix<Type> operator - (const Type& deductible_element, const Matrix<Type>& base_matrix);
 
-    template<class Type>
+    template <class Type>
     friend Matrix<Type> operator * (const Matrix<Type>& base_matrix, const Type& multiplier_element);
 
-    template<class Type>
+    template <class Type>
     friend Matrix<Type> operator * (const Type& multiplier_element, const Matrix<Type>& base_matrix);
+
+    template <class Type>
+    friend Matrix<Type> operator / (const Matrix<Type>& base_matrix, const Type& divisor_element);
+
+    template <class Type>
+    friend Matrix<Type> operator / (const Type& divisor_element, const Matrix<Type>& base_matrix);
 
 private :
 
@@ -358,7 +364,7 @@ Matrix<TypeOfMatrixElements> operator - (const TypeOfMatrixElements& deductible_
     register int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
-            temp.elements[i][j] = base_matrix.elements[i][j] - deductible_element;
+            temp.elements[i][j] = deductible_element - base_matrix.elements[i][j];
     return temp;
 }
 
@@ -381,6 +387,28 @@ Matrix<TypeOfMatrixElements> operator * (const TypeOfMatrixElements& multiplier_
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] * multiplier_element;
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator / (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& divisor_element)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = base_matrix.elements[i][j] / divisor_element;
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator / (const TypeOfMatrixElements& divisor_element, const Matrix<TypeOfMatrixElements>& base_matrix)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = divisor_element / base_matrix.elements[i][j];
     return temp;
 }
 
