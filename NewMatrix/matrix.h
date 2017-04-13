@@ -35,6 +35,15 @@ public :
     template<class Type>
     friend Matrix<Type> operator + (const Matrix<Type>& base_matrix, const Type& addable_element);
 
+    template<class Type>
+    friend Matrix<Type> operator + (const Type& addable_element, const Matrix<Type>& base_matrix);
+
+    template<class Type>
+    friend Matrix<Type> operator * (const Matrix<Type>& base_matrix, const Type& multiplier_element);
+
+    template<class Type>
+    friend Matrix<Type> operator * (const Type& multiplier_element, const Matrix<Type>& base_matrix);
+
 private :
 
     string name;
@@ -56,7 +65,6 @@ private :
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>::Matrix()
 {
-    name = "EMPTY";
     rows = 0;
     columns = 0;
 
@@ -312,6 +320,39 @@ Matrix<TypeOfMatrixElements> operator + (const Matrix<TypeOfMatrixElements>& bas
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] + addable_element;
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator + (const TypeOfMatrixElements& addable_element, const Matrix<TypeOfMatrixElements>& base_matrix)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = base_matrix.elements[i][j] + addable_element;
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator * (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& multiplier_element)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = base_matrix.elements[i][j] * multiplier_element;
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator * (const TypeOfMatrixElements& multiplier_element, const Matrix<TypeOfMatrixElements>& base_matrix)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = base_matrix.elements[i][j] * multiplier_element;
     return temp;
 }
 
