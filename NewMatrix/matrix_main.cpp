@@ -18,7 +18,11 @@ int main()
     matrix_a.Show();
     matrix_b.Show();
 
-    matrix_c = 1 - (123 - matrix_a) * (matrix_b / 10);
+    matrix_c = (123 - matrix_a) * (matrix_b / 2);
+
+    matrix_c.Show();
+
+    matrix_c.Transpose();
 
     matrix_c.Show();
 

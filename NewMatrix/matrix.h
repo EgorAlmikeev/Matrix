@@ -24,6 +24,7 @@ public :
     void Show();
 
     void SetElements();
+    void Transpose();
 
     Matrix operator + (const Matrix& addable_matrix);
     Matrix operator - (const Matrix& subtrahend_matrix);
@@ -230,6 +231,17 @@ void Matrix<TypeOfMatrixElements>::SetElements()
         ++i;
         j = 0;
     }
+}
+
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::Transpose()
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = elements[j][i];
+    *this = temp;
 }
 
 //functios END
