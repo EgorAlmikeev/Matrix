@@ -25,6 +25,9 @@ public :
 
     void SetElements();
     void Transpose();
+    void SwapRows(short row_a, short row_b);
+    void SwapColumns(short column_a, short column_b);
+    void StairStep();
 
     Matrix operator + (const Matrix& addable_matrix);
     Matrix operator - (const Matrix& deductible_matrix);
@@ -90,7 +93,6 @@ private :
 
     enum errorflag {add, deduct, multiplication, division, equal};
 
-    static inline void errormsg(const Matrix& culprit, errorflag flag);
     static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag);
 };
 
@@ -154,12 +156,6 @@ Matrix<TypeOfMatrixElements>::~Matrix()
 //functions
 
 //functions/static
-
-template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& culpit, errorflag flag)
-{
-
-}
 
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& first_culprit, const Matrix<TypeOfMatrixElements>& second_culpit , errorflag flag)
@@ -262,6 +258,22 @@ void Matrix<TypeOfMatrixElements>::Transpose()
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = elements[j][i];
     *this = temp;
+}
+
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
+{
+    swap(elements[row_a], elements[row_b]);
+}
+
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
+{
+    register int i, j;
+    for(i = 0; i < rows; ++i)
+        for(j = 0; j < columns; ++j)
+            if(j == column_a)
+                swap(elements[i][j], elements[i][column_b]);
 }
 
 //functios END
