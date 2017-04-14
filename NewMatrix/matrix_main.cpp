@@ -15,16 +15,29 @@ int main()
     matrix_a.SetElements();
     matrix_b.SetElements();
 
+    cout << "\n\tДо операций : ";
     matrix_a.Show();
     matrix_b.Show();
 
-    matrix_c = (123 - matrix_a) * (matrix_b / 2);
+    cout << "\n\tmatrix_a *= matrix_b";
+    matrix_a *= matrix_b;
+    matrix_a.Show();
 
-    matrix_c.Show();
+    cout << "\n\tmatrix_a /= matrix_b";
+    matrix_a /= matrix_b;
+    matrix_a.Show();
 
-    matrix_c.Transpose();
+    cout << "\n\tmatrix_a %= matrix_b";
+    matrix_a %= matrix_b;
+    matrix_a.Show();
 
-    matrix_c.Show();
+    cout << "\n\tmatrix_a += matrix_b";
+    matrix_a += matrix_b;
+    matrix_a.Show();
+
+    cout << "\n\tmatrix_a -= matrix_b";
+    matrix_a -= matrix_b;
+    matrix_a.Show();
 
     cout << "\n\n\tEnd of program\n";
 
