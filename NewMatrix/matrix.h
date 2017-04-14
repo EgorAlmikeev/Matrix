@@ -24,13 +24,27 @@ public :
     void Show();
 
     void SetElements();
+    void Transpose();
 
     Matrix operator + (const Matrix& addable_matrix);
-    Matrix operator - (const Matrix& subtrahend_matrix);
+    Matrix operator - (const Matrix& deductible_matrix);
     Matrix operator * (const Matrix& multiplier_matrix);
+    Matrix operator / (const Matrix& divisor_matrix);
+    Matrix operator % (const Matrix& divisor_matrix);
 
     Matrix& operator = (const Matrix& equalable_matrix);
     Matrix& operator = (const TypeOfMatrixElements& equalable_element);
+
+    Matrix& operator += (const Matrix& addable_matrix);
+    Matrix& operator += (const TypeOfMatrixElements& addable_element);
+    Matrix& operator -= (const Matrix& deductible_matrix);
+    Matrix& operator -= (const TypeOfMatrixElements& deductible_element);
+    Matrix& operator *= (const Matrix& multiplier_matrix);
+    Matrix& operator *= (const TypeOfMatrixElements& multiplier_element);
+    Matrix& operator /= (const Matrix& divisor_matrix);
+    Matrix& operator /= (const TypeOfMatrixElements& divisor_element);
+    Matrix& operator %= (const Matrix& divisor_matrix);
+    Matrix& operator %= (const TypeOfMatrixElements& divisor_element);
 
     template <class Type>
     friend Matrix<Type> operator + (const Matrix<Type>& base_matrix, const Type& addable_element);
@@ -56,17 +70,23 @@ public :
     template <class Type>
     friend Matrix<Type> operator / (const Type& divisor_element, const Matrix<Type>& base_matrix);
 
+    template <class Type>
+    friend Matrix<Type> operator % (const Matrix<Type>& base_matrix, const Type& divisor_element);
+
+    template <class Type>
+    friend Matrix<Type> operator % (const Type& divisor_element, const Matrix<Type>& base_matrix);
+
 private :
 
     string name;
-    int rows;
-    int columns;
+    short rows;
+    short columns;
 
     TypeOfMatrixElements **elements;
 
     short GetLongestElementSize();
 
-    enum errorflag {add, deduct, multiplication, equal};
+    enum errorflag {add, deduct, multiplication, division, equal};
 
     static inline void errormsg(const Matrix& culprit, errorflag flag);
     static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag);
@@ -195,12 +215,11 @@ void Matrix<TypeOfMatrixElements>::Show()
     register int i, j;
     short printable_size = this->GetLongestElementSize();
 
-    for(i = 0; i < rows; ++i) {
+    for(i = 0; i < rows; ++i)
+    {
         STD_OUT_STREAM << endl;
         for(j = 0; j < columns; ++j)
-        {
             STD_OUT_STREAM << setw(printable_size) << elements[i][j];
-        }
     }
 }
 
@@ -232,6 +251,17 @@ void Matrix<TypeOfMatrixElements>::SetElements()
     }
 }
 
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::Transpose()
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = elements[j][i];
+    *this = temp;
+}
+
 //functios END
 
 //operators
@@ -255,20 +285,20 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Mat
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (const Matrix<TypeOfMatrixElements>& subtrahend_matrix)
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (const Matrix<TypeOfMatrixElements>& deductible_matrix)
 {
-    if(rows == subtrahend_matrix.rows && columns == subtrahend_matrix.columns)
+    if(rows == deductible_matrix.rows && columns == deductible_matrix.columns)
     {
         Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
         register int i, j;
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
-                temp.elements[i][j] = elements[i][j] - subtrahend_matrix.elements[i][j];
+                temp.elements[i][j] = elements[i][j] - deductible_matrix.elements[i][j];
         return temp;
     }
     else
     {
-        Matrix<TypeOfMatrixElements>::errormsg(*this, subtrahend_matrix, errorflag::deduct);
+        Matrix<TypeOfMatrixElements>::errormsg(*this, deductible_matrix, errorflag::deduct);
     }
 }
 
@@ -296,6 +326,42 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (const Mat
 }
 
 template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator / (const Matrix<TypeOfMatrixElements>& divisor_matrix)
+{
+    if(rows == divisor_matrix.rows && columns == divisor_matrix.columns)
+    {
+        Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
+        register int i, j;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                temp.elements[i][j] = elements[i][j] / divisor_matrix.elements[i][j];
+        return temp;
+    }
+    else
+    {
+        Matrix<TypeOfMatrixElements>::errormsg(*this, divisor_matrix, division);
+    }
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator % (const Matrix<TypeOfMatrixElements>& divisor_matrix)
+{
+    if(rows == divisor_matrix.rows && columns == divisor_matrix.columns)
+    {
+        Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
+        register int i, j;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                temp.elements[i][j] = elements[i][j] % divisor_matrix.elements[i][j];
+        return temp;
+    }
+    else
+    {
+        Matrix<TypeOfMatrixElements>::errormsg(*this, divisor_matrix, division);
+    }
+}
+
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Matrix<TypeOfMatrixElements>& equalable_matrix)
 {
     if(rows == equalable_matrix.rows && columns == equalable_matrix.columns)
@@ -319,6 +385,76 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ty
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
             elements[i][j] = equalable_element;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator += (const Matrix& addable_matrix)
+{
+    *this = *this + addable_matrix;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator += (const TypeOfMatrixElements& addable_element)
+{
+    *this = *this + addable_element;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator -= (const Matrix& deductible_matrix)
+{
+    *this = *this - deductible_matrix;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator -= (const TypeOfMatrixElements& deductible_element)
+{
+    *this = *this - deductible_element;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator *= (const Matrix& multiplier_matrix)
+{
+    *this = *this * multiplier_matrix;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator *= (const TypeOfMatrixElements& multiplier_element)
+{
+    *this = *this * multiplier_element;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator /= (const Matrix<TypeOfMatrixElements>& divisor_matrix)
+{
+    *this = *this / divisor_matrix;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator /= (const TypeOfMatrixElements& divisor_element)
+{
+    *this = *this / divisor_element;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator %= (const Matrix<TypeOfMatrixElements>& divisor_matrix)
+{
+    *this = *this % divisor_matrix;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator %= (const TypeOfMatrixElements& divisor_element)
+{
+    *this = *this % divisor_element;
     return *this;
 }
 
@@ -409,6 +545,28 @@ Matrix<TypeOfMatrixElements> operator / (const TypeOfMatrixElements& divisor_ele
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = divisor_element / base_matrix.elements[i][j];
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator % (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& divisor_element)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = base_matrix.elements[i][j] % divisor_element;
+    return temp;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> operator % (const TypeOfMatrixElements& divisor_element, const Matrix<TypeOfMatrixElements>& base_matrix)
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
+    register int i, j;
+    for(i = 0; i < temp.rows; ++i)
+        for(j = 0; j < temp.columns; ++j)
+            temp.elements[i][j] = divisor_element % base_matrix.elements[i][j];
     return temp;
 }
 

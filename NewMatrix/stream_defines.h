@@ -10,5 +10,6 @@
 #define STD_CRITICAL_STREAM cerr
 #define STD_FATAL_STREAM cerr
 #define STD_LOG_STREAM clog
+#define STD_FILE_STREAM fstream
 
 #endif // STREAM_DEFINES_H
