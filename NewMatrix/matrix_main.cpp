@@ -15,29 +15,11 @@ int main()
     matrix_a.SetElements();
     matrix_b.SetElements();
 
-    cout << "\n\tДо операций : ";
     matrix_a.Show();
     matrix_b.Show();
 
-    cout << "\n\tmatrix_a *= matrix_b";
-    matrix_a *= matrix_b;
-    matrix_a.Show();
-
-    cout << "\n\tmatrix_a /= matrix_b";
-    matrix_a /= matrix_b;
-    matrix_a.Show();
-
-    cout << "\n\tmatrix_a %= matrix_b";
-    matrix_a %= matrix_b;
-    matrix_a.Show();
-
-    cout << "\n\tmatrix_a += matrix_b";
-    matrix_a += matrix_b;
-    matrix_a.Show();
-
-    cout << "\n\tmatrix_a -= matrix_b";
-    matrix_a -= matrix_b;
-    matrix_a.Show();
+    if(matrix_a == matrix_b)
+        cout << "\n\n\t\COMPARE\n";
 
     cout << "\n\n\tEnd of program\n";
 

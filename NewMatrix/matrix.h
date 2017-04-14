@@ -32,6 +32,8 @@ public :
     Matrix operator / (const Matrix& divisor_matrix);
     Matrix operator % (const Matrix& divisor_matrix);
 
+    bool operator == (const Matrix& comparable_matrix);
+
     Matrix& operator = (const Matrix& equalable_matrix);
     Matrix& operator = (const TypeOfMatrixElements& equalable_element);
 
@@ -264,7 +266,29 @@ void Matrix<TypeOfMatrixElements>::Transpose()
 
 //functios END
 
-//operators
+//operators/logic
+
+template <class TypeOfMatrixElements>
+bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElements>& comparable_matrix)
+{
+    if(rows == comparable_matrix.rows && columns == comparable_matrix.columns)
+    {
+        bool iscompare = true;
+        register int i, j;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                iscompare = (elements[i][j] == comparable_matrix.elements[i][j]) ? iscompare : false;
+        return iscompare;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//operators/logic END
+
+//operators/arithmetic
 
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Matrix<TypeOfMatrixElements>& addable_matrix)
@@ -458,7 +482,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator %= (const T
     return *this;
 }
 
-//operators/friend
+//operators/arithmetic/friend
 
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator + (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& addable_element)
@@ -570,8 +594,8 @@ Matrix<TypeOfMatrixElements> operator % (const TypeOfMatrixElements& divisor_ele
     return temp;
 }
 
-//operators/friend END
+//operators/arithmetic/friend END
 
-//operators END
+//operatorsarithmetic/ END
 
 #endif // MATRIX_H
