@@ -9,7 +9,7 @@ void print(char simbol, int quantity);
 template <class Type>
 void swap(Type** a, Type** b);
 
-template <class Type>
-void swap(Type* a, Type* b);
+//template <class Type>
+//void swap(Type& a, Type& b);
 
 #endif // FUNCTIONS_HEADERS_H

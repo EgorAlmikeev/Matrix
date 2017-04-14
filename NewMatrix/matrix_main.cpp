@@ -15,6 +15,7 @@ int main()
     matrix_a.Show();
 
     matrix_a.SwapColumns(1, 4);
+    matrix_a.SwapRows(1, 4);
 
     matrix_a.Show();
 
