@@ -21,6 +21,32 @@ public :
 
     ~Matrix();
 
+    class MatrixException
+    {
+    public :
+
+        enum errorflag {add, deduct, multiplication, division, equal};
+
+        static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag)
+        {
+            string what_happened;
+
+            switch(flag)
+            {
+            case add : what_happened = " CAN'T ADD "; break;
+            case deduct : what_happened = " CAN'T DEDUCT "; break;
+            case multiplication : what_happened = " CAN'T MULTIPLICATE "; break;
+            case equal : what_happened = " CAN'T EQUAL "; break;
+            }
+
+            STD_ERROR_STREAM << "\n#error :" << what_happened << "\"" << first_culprit.name << "\""
+                             << "[" << first_culprit.rows << "][" << first_culprit.columns << "] and "
+                             << "\"" << second_culprit.name << "\""
+                             << "[" << second_culprit.rows << "][" << second_culprit.columns << "]\n";
+            exit(1);
+        }
+    };
+
     void Show();
 
     void SetElements();
@@ -90,10 +116,6 @@ private :
     TypeOfMatrixElements **elements;
 
     short GetLongestElementSize();
-
-    enum errorflag {add, deduct, multiplication, division, equal};
-
-    static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag);
 };
 
 //constructors & destructors
@@ -110,19 +132,34 @@ Matrix<TypeOfMatrixElements>::Matrix()
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matrix)
 {
-    rows = copying_matrix.rows;
-    columns = copying_matrix.columns;
-
     register int i, j;
 
-    elements = new TypeOfMatrixElements* [rows];
+    if(rows != 0 && columns != 0 && elements != NULL)
+    {
+        for(i = 0; i < rows; ++i)
+            delete [] elements[i];
 
-    for(i = 0; i < rows; ++i)
-        elements[i] = new TypeOfMatrixElements[columns];
+        delete [] elements;
+    }
 
-    for(i = 0; i < rows; ++i)
-        for(j = 0; j < columns; ++j)
-            elements[i][j] = copying_matrix.elements[i][j];
+    try
+    {
+        rows = copying_matrix.rows;
+        columns = copying_matrix.columns;
+
+        elements = new TypeOfMatrixElements* [rows];
+
+        for(i = 0; i < rows; ++i)
+            elements[i] = new TypeOfMatrixElements[columns];
+
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                elements[i][j] = copying_matrix.elements[i][j];
+    }
+    catch(bad_alloc)
+    {
+        STD_CRITICAL_STREAM << "\n#error : CAN'T ALLOC MEMORY\n";
+    }
 }
 
 template <class TypeOfMatrixElements>
@@ -130,14 +167,21 @@ Matrix<TypeOfMatrixElements>::Matrix(string _name, int _rows, int _columns) : na
 {
     register int i, j;
 
-    elements = new TypeOfMatrixElements* [rows];
+    try
+    {
+        elements = new TypeOfMatrixElements* [rows];
 
-    for(i = 0; i < rows; ++i)
-        elements[i] = new TypeOfMatrixElements[columns];
+        for(i = 0; i < rows; ++i)
+            elements[i] = new TypeOfMatrixElements[columns];
 
-    for(i = 0; i < rows; ++i)
-        for(j = 0; j < columns; ++j)
-            elements[i][j] = static_cast<TypeOfMatrixElements>(0);
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                elements[i][j] = static_cast<TypeOfMatrixElements>(0);
+    }
+    catch(bad_alloc)
+    {
+        STD_CRITICAL_STREAM << "\n#error : CAN'T ALLOC MEMORY\n";
+    }
 }
 
 template <class TypeOfMatrixElements>
@@ -154,30 +198,6 @@ Matrix<TypeOfMatrixElements>::~Matrix()
 //constructors & destructors END
 
 //functions
-
-//functions/static
-
-template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::errormsg(const Matrix<TypeOfMatrixElements>& first_culprit, const Matrix<TypeOfMatrixElements>& second_culpit , errorflag flag)
-{
-    string what_happened;
-
-    switch(flag)
-    {
-    case add : what_happened = " CAN NOT ADD "; break;
-    case deduct : what_happened = " CAN NOT DEDUCT "; break;
-    case multiplication : what_happened = " CAN NOT MULTIPLICATE "; break;
-    case equal : what_happened = " CAN NOT EQUAL "; break;
-    }
-
-    STD_ERROR_STREAM << "\n#error :" << what_happened << "\"" << first_culprit.name << "\""
-                     << "[" << first_culprit.rows << "][" << first_culprit.columns << "] and "
-                     << "\"" << second_culpit.name << "\""
-                     << "[" << second_culpit.rows << "][" << second_culpit.columns << "]\n";
-    exit(1);
-}
-
-//functions/static END
 
 template <class TypeOfMatrixElements>
 short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
@@ -320,7 +340,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Mat
     }
     else
     {
-        Matrix<TypeOfMatrixElements>::errormsg(*this, addable_matrix, errorflag::add);
+        throw MatrixException();
     }
 }
 
@@ -338,7 +358,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (const Mat
     }
     else
     {
-        Matrix<TypeOfMatrixElements>::errormsg(*this, deductible_matrix, errorflag::deduct);
+        throw MatrixException();
     }
 }
 
@@ -361,7 +381,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (const Mat
     }
     else
     {
-        Matrix<TypeOfMatrixElements>::errormsg(*this, multiplier_matrix, errorflag::multiplication);
+        throw MatrixException();
     }
 }
 
@@ -379,7 +399,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator / (const Mat
     }
     else
     {
-        Matrix<TypeOfMatrixElements>::errormsg(*this, divisor_matrix, division);
+        throw MatrixException();
     }
 }
 
@@ -397,25 +417,42 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator % (const Mat
     }
     else
     {
-        Matrix<TypeOfMatrixElements>::errormsg(*this, divisor_matrix, division);
+        throw MatrixException();
     }
 }
 
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Matrix<TypeOfMatrixElements>& equalable_matrix)
 {
-    if(rows == equalable_matrix.rows && columns == equalable_matrix.columns)
+    register int i, j;
+
+    if(rows != 0 && columns != 0 && elements != NULL)
     {
-        register int i, j;
+        for(i = 0; i < rows; ++i)
+            delete [] elements[i];
+
+        delete [] elements;
+    }
+
+    try
+    {
+        rows = equalable_matrix.rows;
+        columns = equalable_matrix.columns;
+
+        elements = new TypeOfMatrixElements* [rows];
+
+        for(i = 0; i < rows; ++i)
+            elements[i] = new TypeOfMatrixElements[columns];
+
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
                 elements[i][j] = equalable_matrix.elements[i][j];
-        return *this;
     }
-    else
+    catch(bad_alloc)
     {
-        Matrix<TypeOfMatrixElements>::errormsg(*this, equalable_matrix, errorflag::equal);
+        STD_CRITICAL_STREAM << "\n#error : CAN'T ALLOC MEMORY\n";
     }
+    return *this;
 }
 
 template <class TypeOfMatrixElements>
