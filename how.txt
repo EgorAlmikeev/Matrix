@@ -55,6 +55,7 @@ Operations/functions IN DEVELOP
 
   Matrix<int> matrix_a("A", 3, 3);
   
+  matrix_a.ChangeElement(0, 0);
   matrix_a.Resize();
   matrix_a.Retype();
   matrix_a.StairStep();
@@ -63,4 +64,6 @@ Operations/functions IN DEVELOP
   matrix_a.GetMinor(0, 0);
   matrix_a.GetBaseMinor();
   matrix_a.ShowBaseMinors();
-  matrix_a.ChangeElement(0, 0);
+  matrix_a.GetAdjointMatrix();
+  matrix_a.GetInverseMatrix();
+  matrix_a.GetTransposeMatrix();
