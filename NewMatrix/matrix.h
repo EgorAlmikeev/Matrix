@@ -25,7 +25,7 @@ public :
     {
     public :
 
-        enum errorflag {add, deduct, multiplication, division, equal};
+        enum errorflag {add, deduct, multiplication, division, equal, swap};
 
         static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag)
         {
@@ -37,6 +37,7 @@ public :
             case deduct : what_happened = " CAN'T DEDUCT "; break;
             case multiplication : what_happened = " CAN'T MULTIPLICATE "; break;
             case equal : what_happened = " CAN'T EQUAL "; break;
+            case swap : what_happened = " CANT'T SWAP "; break;
             }
 
             STD_ERROR_STREAM << "\n#error :" << what_happened << "\"" << first_culprit.name << "\""
@@ -54,6 +55,8 @@ public :
     void SwapRows(short row_a, short row_b);
     void SwapColumns(short column_a, short column_b);
     void StairStep();
+    void Resize();
+    void Reset();
 
     Matrix operator + (const Matrix& addable_matrix);
     Matrix operator - (const Matrix& deductible_matrix);
@@ -126,7 +129,7 @@ Matrix<TypeOfMatrixElements>::Matrix()
     rows = 0;
     columns = 0;
 
-    elements = NULL;
+    elements = nullptr;
 }
 
 template <class TypeOfMatrixElements>
@@ -134,13 +137,7 @@ Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matri
 {
     register int i, j;
 
-    if(rows != 0 && columns != 0 && elements != NULL)
-    {
-        for(i = 0; i < rows; ++i)
-            delete [] elements[i];
-
-        delete [] elements;
-    }
+    *this->Reset();
 
     try
     {
@@ -315,17 +312,34 @@ void Matrix<TypeOfMatrixElements>::Transpose()
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
 {
-    swap(elements[row_a], elements[row_b]);
+    if(row_a <= rows && row_b <= rows)
+        swap(elements[row_a - 1], elements[row_b - 1]);
+    else throw MatrixException();
 }
 
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
 {
-    register int i, j;
-    for(i = 0; i < rows; ++i)
-        for(j = 0; j < columns; ++j)
-            if(j == column_a)
-                swap(elements[i][j], elements[i][column_b]);
+    if(column_a <= columns && column_b <= columns)
+        register int i, j;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < columns; ++j)
+                if(j == column_a - 1)
+                    swap(elements[i][j], elements[i][column_b - 1]);
+        else throw MatrixException();
+}
+
+template <class TypeOfMatrixElements>
+void Matrix<TypeOfMatrixElements>::Reset()
+{
+    if(rows != 0 && columns != 0 && elements != nullptr)
+    {
+        register int i, j;
+        for(i = 0; i < rows; ++i)
+            delete [] elements[i];
+        delete [] elements;
+        rows = columns = 0;
+    }
 }
 
 //functios END
@@ -454,13 +468,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
 {
     register int i, j;
 
-    if(rows != 0 && columns != 0 && elements != NULL)
-    {
-        for(i = 0; i < rows; ++i)
-            delete [] elements[i];
-
-        delete [] elements;
-    }
+    *this->Reset();
 
     try
     {
