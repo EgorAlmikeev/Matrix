@@ -204,24 +204,49 @@ short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
 {
     short longest_element_size = 2;
     bool sign = false;
+    bool integer = true;
 
     register int i, j;
+
+    if(
+            typeid(TypeOfMatrixElements).name() == typeid(long double).name() ||
+            typeid(TypeOfMatrixElements).name() == typeid(double).name() ||
+            typeid(TypeOfMatrixElements).name() == typeid(float).name()
+      )
+        integer = false;
 
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
         {
             short current_element_size = 1;
-            TypeOfMatrixElements current_element = elements[i][j];
+            TypeOfMatrixElements current_element;
+            int current_integer_element;
 
-            sign = (current_element < 0) ? true : sign;
+            if(integer)
+            {
+                current_element = elements[i][j];
 
-            while(current_element /= 10)
-                current_element_size++;
+                while(current_element /= 10)
+                    ++current_element_size;
+
+                sign = (current_element < 0) ? true : sign;
+            }
+            else
+            {
+                current_integer_element = elements[i][j];
+
+                while(current_integer_element /= 10)
+                    ++current_element_size;
+
+                sign = (current_integer_element < 0) ? true : sign;
+            }
 
             longest_element_size = (current_element_size > longest_element_size) ? current_element_size : longest_element_size;
         }
 
     longest_element_size += (sign) ? 1 : 0;
+    longest_element_size += (integer) ? 0 : 2;
+
     return longest_element_size + 1;
 }
 
@@ -229,6 +254,13 @@ template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::Show()
 {
     STD_OUT_STREAM << "\n\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] : ";
+
+    if(
+            typeid(TypeOfMatrixElements).name() == typeid(long double).name() ||
+            typeid(TypeOfMatrixElements).name() == typeid(double).name() ||
+            typeid(TypeOfMatrixElements).name() == typeid(float).name()
+      )
+        STD_OUT_STREAM << setiosflags(ios::fixed) << setprecision(1) << setfill(' ');
 
     register int i, j;
     short printable_size = this->GetLongestElementSize();
