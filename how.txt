@@ -1,0 +1,66 @@
+How to use the Matrix library.
+
+Object creating.
+  
+  int rows = 3;
+  int columns = 3;
+  
+  Matrix<typename> obj_name("name of matrix", rows, columns);
+  
+Operations/functions.
+
+  Matrix<int> matrix_a("A", 3, 3);
+  
+  matrix_a.SetElements();             // console input
+  matrix_a.Show();                    // console out
+  matrix_a.SwapRows(0, 1);            // the numbering starts from zero
+  matrix_a.SwapColumns(0, 2);
+  matrix_a.Transpose();
+  
+Overloaded operators.
+  
+  Matrix<int> matrix_a("A", 3, 3);
+  Matrix<int> matrix_b("B", 3, 3);  
+  Matrix<int> matrix_c("C", 3, 3);
+  
+  matrix_c = matrix_a + matrix_b;     // remember that you can't use this
+  matrix_c = matrix_a - matrix_b;     // operations with matrices which are different types or sizes
+  matrix_c = matrix_a * matrix_b;     // in the future I'll create a retype and resize functions
+  matrix_c = matrix_a / matrix_b;
+  matrix_c = matrix_a % matrix_b;
+  
+  matrix_a += matrix_b;
+  matrix_a -= matrix_b;
+  matrix_a *= matrix_b;
+  matrix_a /= matrix_b;
+  matrix_a %= matrix_b;
+  
+  int digit = 3;
+  
+  matrix_c = matrix_a + digit;
+  matrix_c = matrix_a - digit;
+  matrix_c = matrix_a * digit;
+  matrix_c = matrix_a / digit;
+  matrix_c = matrix_a % digit;
+  
+  matrix_a += digit;
+  matrix_a -= digit;
+  matrix_a *= digit;
+  matrix_a /= digit;
+  matrix_a %= digit;
+  
+  bool isequal = (matrix_a == matrix_b) ? true : false;
+  
+Operations/functions IN DEVELOP
+
+  Matrix<int> matrix_a("A", 3, 3);
+  
+  matrix_a.Resize();
+  matrix_a.Retype();
+  matrix_a.StairStep();
+  matrix_a.GetDeterminant();
+  matrix_a.GetRank();
+  matrix_a.GetMinor(0, 0);
+  matrix_a.GetBaseMinor();
+  matrix_a.ShowBaseMinors();
+  matrix_a.ChangeElement(0, 0);
