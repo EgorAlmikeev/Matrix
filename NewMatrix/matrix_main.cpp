@@ -14,10 +14,12 @@ int main()
 
     matrix_a.Show();
 
-    matrix_a.SwapRows(0, 1);
-    matrix_a.SwapColumns(0, 1);
+    matrix_a.SwapRows(1, 2);
+    matrix_a.SwapColumns(1, 2);
 
+    matrix_a.Resize(3, 3);
     matrix_a.Show();
+
 
     cout << "\n\n\tEnd of program\n";
 
