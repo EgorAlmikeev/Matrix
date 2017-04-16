@@ -325,11 +325,7 @@ void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
             if(j == column_a)
-            {
-                TypeOfMatrixElements temp = elements[i][j];
-                elements[i][j] = elements[i][column_b];
-                elements[i][column_b] = temp;
-            }
+                swap(elements[i][j], elements[i][column_b]);
 }
 
 //functios END

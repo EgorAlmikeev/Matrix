@@ -6,7 +6,7 @@
 
 void print(char simbol, int quantity);
 
-template <class Type>
-void swap(Type** a, Type** b);
+void swap(void** a, void** b);
+void swap(void* a, void* b);
 
 #endif // FUNCTIONS_HEADERS_H
