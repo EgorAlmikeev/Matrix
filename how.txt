@@ -13,8 +13,8 @@ Operations/functions.
   
   matrix_a.SetElements();             // console input
   matrix_a.Show();                    // console out
-  matrix_a.SwapRows(0, 1);            // the numbering starts from zero
-  matrix_a.SwapColumns(0, 2);
+  matrix_a.SwapRows(1, 3);            // the numbering starts not from zero
+  matrix_a.SwapColumns(1, 3);
   matrix_a.Transpose();
   
 Overloaded operators.
