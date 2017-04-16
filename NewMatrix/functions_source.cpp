@@ -8,10 +8,16 @@ void print(char simbol, int quantity)
         STD_OUT_STREAM << simbol;
 }
 
-template <class Type>
-void swap(Type** a, Type** b)
+void swap(void** a, void** b)
 {
-    Type* temp = a;
+    void** temp = a;
+    a = b;
+    b = temp;
+}
+
+void swap(void* a, void* b)
+{
+    void* temp = a;
     a = b;
     b = temp;
 }
