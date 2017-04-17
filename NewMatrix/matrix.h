@@ -21,11 +21,11 @@ public :
 
     ~Matrix();
 
-    class MatrixException
+    class MatrixArithmeticException
     {
     public :
 
-        enum errorflag {add, deduct, multiplication, division, equal, swap};
+        enum errorflag {add, deduct, multiplication, division, equal, unknown};
 
         static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag)
         {
@@ -37,16 +37,17 @@ public :
             case deduct : what_happened = " CAN'T DEDUCT "; break;
             case multiplication : what_happened = " CAN'T MULTIPLICATE "; break;
             case equal : what_happened = " CAN'T EQUAL "; break;
-            case swap : what_happened = " CANT'T SWAP "; break;
+            case unknown : what_happened = " CAN'T CONCRETIZE ERROR "; break;
             }
 
-            STD_ERROR_STREAM << "\n#error :" << what_happened << "\"" << first_culprit.name << "\""
+            STD_ERROR_STREAM << "\n#error [arithmetic] : " << what_happened << "\"" << first_culprit.name << "\""
                              << "[" << first_culprit.rows << "][" << first_culprit.columns << "] and "
                              << "\"" << second_culprit.name << "\""
                              << "[" << second_culprit.rows << "][" << second_culprit.columns << "]\n";
             exit(1);
         }
     };
+    class MatrixAccessException {};
 
     void Show();
 
@@ -57,6 +58,7 @@ public :
     void StairStep();
     void Resize(short _rows, short _columns);
     void Reset();
+    TypeOfMatrixElements& EditElement(const short _row, const short _column);
 
     Matrix operator + (const Matrix& addable_matrix);
     Matrix operator - (const Matrix& deductible_matrix);
@@ -128,6 +130,7 @@ Matrix<TypeOfMatrixElements>::Matrix()
 {
     rows = 0;
     columns = 0;
+    name = "EMPTY";
 
     elements = nullptr;
 }
@@ -137,7 +140,7 @@ Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matri
 {
     register int i, j;
 
-    *this->Reset();
+    this->Reset();
 
     try
     {
@@ -312,9 +315,9 @@ void Matrix<TypeOfMatrixElements>::Transpose()
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
 {
-    if(row_a <= rows && row_b <= rows)
+    if(row_a <= rows && row_b <= rows && row_a > 0 && row_b > 0)
         swap(elements[row_a - 1], elements[row_b - 1]);
-    else throw MatrixException();
+    else throw MatrixAccessException();
 }
 
 template <class TypeOfMatrixElements>
@@ -322,14 +325,14 @@ void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
 {
     register int i, j;
 
-    if(column_a <= columns && column_b <= columns)
+    if(column_a <= columns && column_b <= columns && column_a > 0 && column_b > 0)
     {
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
                 if(j == column_a - 1)
                     swap(elements[i][j], elements[i][column_b - 1]);
     }
-    else throw MatrixException();
+    else throw MatrixAccessException();
 }
 
 template <class TypeOfMatrixElements>
@@ -338,36 +341,43 @@ void Matrix<TypeOfMatrixElements>::Resize(short _rows, short _columns)
     TypeOfMatrixElements **old_elements = elements;
     register int i, j;
 
-    try
+    if(_rows > 0 && _columns > 0)
     {
-        elements = new TypeOfMatrixElements* [_rows];
-
-        for(i = 0; i < _rows; ++i)
-            elements[i] = new TypeOfMatrixElements[_columns];
-
-        if(rows < _rows && columns < _columns)
+        try
         {
-            for(i = 0; i < rows; ++i)
-                for(j = 0; j < columns; ++j)
-                    elements[i][j] = old_elements[i][j];
-        }
-        else
-        {
+            elements = new TypeOfMatrixElements* [_rows];
+
             for(i = 0; i < _rows; ++i)
-                for(j = 0; j < _columns; ++j)
-                    elements[i][j] = old_elements[i][j];
+                elements[i] = new TypeOfMatrixElements[_columns];
+
+            if(rows < _rows && columns < _columns)
+            {
+                for(i = 0; i < rows; ++i)
+                    for(j = 0; j < columns; ++j)
+                        elements[i][j] = old_elements[i][j];
+            }
+            else
+            {
+                for(i = 0; i < _rows; ++i)
+                    for(j = 0; j < _columns; ++j)
+                        elements[i][j] = old_elements[i][j];
+            }
+
+            for(i = 0; i < rows; ++i)
+                delete [] old_elements[i];
+            delete [] old_elements;
+
+            rows = _rows;
+            columns = _columns;
         }
-
-        for(i = 0; i < rows; ++i)
-            delete [] old_elements[i];
-        delete [] old_elements;
-
-        rows = _rows;
-        columns = _columns;
+        catch(bad_alloc)
+        {
+            STD_CRITICAL_STREAM << "\n#error : CAN'T ALLOC MEMORY\n";
+        }
     }
-    catch(bad_alloc)
+    else
     {
-        STD_CRITICAL_STREAM << "\n#error : CAN'T ALLOC MEMORY\n";
+        throw MatrixAccessException();
     }
 
 }
@@ -382,6 +392,19 @@ void Matrix<TypeOfMatrixElements>::Reset()
             delete [] elements[i];
         delete [] elements;
         rows = columns = 0;
+    }
+}
+
+template <class TypeOfMatrixElements>
+TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(const short _row, const short _column)
+{
+    if(_row <= rows && _row > 0 && _column <= columns && _column > 0)
+    {
+        return elements[_row - 1][_column - 1];
+    }
+    else
+    {
+        throw MatrixArithmeticException();
     }
 }
 
@@ -425,7 +448,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Mat
     }
     else
     {
-        throw MatrixException();
+        throw MatrixArithmeticException();
     }
 }
 
@@ -443,7 +466,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (const Mat
     }
     else
     {
-        throw MatrixException();
+        throw MatrixArithmeticException();
     }
 }
 
@@ -466,7 +489,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (const Mat
     }
     else
     {
-        throw MatrixException();
+        throw MatrixArithmeticException();
     }
 }
 
@@ -484,7 +507,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator / (const Mat
     }
     else
     {
-        throw MatrixException();
+        throw MatrixArithmeticException();
     }
 }
 
@@ -502,7 +525,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator % (const Mat
     }
     else
     {
-        throw MatrixException();
+        throw MatrixArithmeticException();
     }
 }
 
@@ -511,7 +534,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
 {
     register int i, j;
 
-    *this->Reset();
+    this->Reset();
 
     try
     {
