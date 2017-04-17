@@ -345,9 +345,18 @@ void Matrix<TypeOfMatrixElements>::Resize(short _rows, short _columns)
         for(i = 0; i < _rows; ++i)
             elements[i] = new TypeOfMatrixElements[_columns];
 
-        for(i = 0; i < rows; ++i)
-            for(j = 0; j < columns; ++j)
-                elements[i][j] = old_elements[i][j];
+        if(rows < _rows && columns < _columns)
+        {
+            for(i = 0; i < rows; ++i)
+                for(j = 0; j < columns; ++j)
+                    elements[i][j] = old_elements[i][j];
+        }
+        else
+        {
+            for(i = 0; i < _rows; ++i)
+                for(j = 0; j < _columns; ++j)
+                    elements[i][j] = old_elements[i][j];
+        }
 
         for(i = 0; i < rows; ++i)
             delete [] old_elements[i];

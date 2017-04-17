@@ -8,18 +8,12 @@ int main()
 
     system("clear");
 
-    Matrix<double> matrix_a("A", 2, 2);
+    Matrix<int> matrix_a("A", 3, 3);
 
     matrix_a.SetElements();
-
     matrix_a.Show();
-
-    matrix_a.SwapRows(1, 2);
-    matrix_a.SwapColumns(1, 2);
-
-    matrix_a.Resize(3, 3);
+    matrix_a.Resize(4, 4);
     matrix_a.Show();
-
 
     cout << "\n\n\tEnd of program\n";
 
