@@ -338,42 +338,37 @@ void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::Resize(short _rows, short _columns)
 {
-    TypeOfMatrixElements **old_elements = elements;
+    Matrix<TypeOfMatrixElements> temp("TEMP", _rows, _columns);
     register int i, j;
 
     if(_rows > 0 && _columns > 0)
     {
-        try
+        if(rows < _rows && columns < _columns)
         {
-            elements = new TypeOfMatrixElements* [_rows];
-
-            for(i = 0; i < _rows; ++i)
-                elements[i] = new TypeOfMatrixElements[_columns];
-
-            if(rows < _rows && columns < _columns)
-            {
-                for(i = 0; i < rows; ++i)
-                    for(j = 0; j < columns; ++j)
-                        elements[i][j] = old_elements[i][j];
-            }
-            else
-            {
-                for(i = 0; i < _rows; ++i)
-                    for(j = 0; j < _columns; ++j)
-                        elements[i][j] = old_elements[i][j];
-            }
-
             for(i = 0; i < rows; ++i)
-                delete [] old_elements[i];
-            delete [] old_elements;
-
-            rows = _rows;
-            columns = _columns;
+                for(j = 0; j < columns; ++j)
+                    temp.elements[i][j] = elements[i][j];
         }
-        catch(bad_alloc)
+        else if(rows > _rows && columns > _columns)
         {
-            STD_CRITICAL_STREAM << "\n#error : CAN'T ALLOC MEMORY\n";
+            for(i = 0; i < _rows; ++i)
+                for(j = 0; j < _columns; ++j)
+                    temp.elements[i][j] = elements[i][j];
         }
+        else if(rows >= _rows && columns <= _columns)
+        {
+            for(i = 0; i < _rows; ++i)
+                for(j = 0; j < columns; ++j)
+                    temp.elements[i][j] = elements[i][j];
+        }
+        else if(rows <= _rows && columns >= _columns)
+        {
+            for(i = 0; i < rows; ++i)
+                for(j = 0; j < _columns; ++j)
+                    temp.elements[i][j] = elements[i][j];
+        }
+
+        *this = temp;
     }
     else
     {
