@@ -48,6 +48,7 @@ public :
         }
     };
     class MatrixAccessException {};
+    class MatrixTypeException {};
 
     void Show();
 
@@ -56,8 +57,9 @@ public :
     void SwapRows(short row_a, short row_b);
     void SwapColumns(short column_a, short column_b);
     void StairStep();
-    void Resize(short _rows, short _columns);
+    void Resize(const short _rows, const short _columns);
     void Reset();
+    Matrix GetMinor(short row, short column);
     TypeOfMatrixElements& EditElement(const short _row, const short _column);
 
     Matrix operator + (const Matrix& addable_matrix);
@@ -209,9 +211,9 @@ short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
     register int i, j;
 
     if(
-            typeid(TypeOfMatrixElements).name() == typeid(long double).name() ||
-            typeid(TypeOfMatrixElements).name() == typeid(double).name() ||
-            typeid(TypeOfMatrixElements).name() == typeid(float).name()
+            typeid(TypeOfMatrixElements) == typeid(long double) ||
+            typeid(TypeOfMatrixElements) == typeid(double) ||
+            typeid(TypeOfMatrixElements) == typeid(float)
       )
         integer = false;
 
@@ -256,11 +258,11 @@ void Matrix<TypeOfMatrixElements>::Show()
     STD_OUT_STREAM << "\n\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] : ";
 
     if(
-            typeid(TypeOfMatrixElements).name() == typeid(long double).name() ||
-            typeid(TypeOfMatrixElements).name() == typeid(double).name() ||
-            typeid(TypeOfMatrixElements).name() == typeid(float).name()
+            typeid(TypeOfMatrixElements) == typeid(long double) ||
+            typeid(TypeOfMatrixElements) == typeid(double) ||
+            typeid(TypeOfMatrixElements) == typeid(float)
       )
-        STD_OUT_STREAM << setiosflags(ios::fixed) << setprecision(1) << setfill(' ');
+        STD_OUT_STREAM << setiosflags(ios::fixed) << setprecision(1);
 
     register int i, j;
     short printable_size = this->GetLongestElementSize();
@@ -315,8 +317,11 @@ void Matrix<TypeOfMatrixElements>::Transpose()
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
 {
-    if(row_a <= rows && row_b <= rows && row_a > 0 && row_b > 0)
-        swap(elements[row_a - 1], elements[row_b - 1]);
+    --row_a;
+    --row_b;
+
+    if(row_a < rows && row_b < rows && row_a >= 0 && row_b >= 0)
+        swap(elements[row_a], elements[row_b]);
     else throw MatrixAccessException();
 }
 
@@ -325,18 +330,21 @@ void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
 {
     register int i, j;
 
-    if(column_a <= columns && column_b <= columns && column_a > 0 && column_b > 0)
+    --column_a;
+    --column_b;
+
+    if(column_a < columns && column_b < columns && column_a >= 0 && column_b >= 0)
     {
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
-                if(j == column_a - 1)
-                    swap(elements[i][j], elements[i][column_b - 1]);
+                if(j == column_a)
+                    swap(elements[i][j], elements[i][column_b]);
     }
     else throw MatrixAccessException();
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::Resize(short _rows, short _columns)
+void Matrix<TypeOfMatrixElements>::Resize(const short _rows, const short _columns)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", _rows, _columns);
     register int i, j;
@@ -391,6 +399,40 @@ void Matrix<TypeOfMatrixElements>::Reset()
 }
 
 template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short excluded_row, short excluded_column)
+{
+    Matrix<TypeOfMatrixElements> minor("MINOR", rows - 1, columns - 1);
+    register int i = 0, j = 0, minor_row = 0, minor_column = 0;
+
+    --excluded_row;
+    --excluded_column;
+
+
+    if(excluded_row < rows && excluded_column < columns && excluded_row >= 0 && excluded_column >= 0 && rows == columns)
+    {
+        for(i = 0; i < rows; ++i)
+            if(i != excluded_row)
+                for(j = 0; j < columns; ++j)
+                    if(j != excluded_column)
+                    {
+                        minor.elements[minor_row][minor_column] = elements[i][j];
+                        if(minor_column + 1 == minor.columns)
+                        {
+                            ++minor_row;
+                            minor_column = 0;
+                        }
+                        else
+                            ++minor_column;
+                    }
+        return minor;
+    }
+    else
+    {
+        throw MatrixAccessException();
+    }
+}
+
+template <class TypeOfMatrixElements>
 TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(const short _row, const short _column)
 {
     if(_row <= rows && _row > 0 && _column <= columns && _column > 0)
@@ -410,18 +452,27 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(const short _row
 template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElements>& comparable_matrix)
 {
-    if(rows == comparable_matrix.rows && columns == comparable_matrix.columns)
-    {
-        bool iscompare = true;
-        register int i, j;
-        for(i = 0; i < rows; ++i)
-            for(j = 0; j < columns; ++j)
-                iscompare = (elements[i][j] == comparable_matrix.elements[i][j]) ? iscompare : false;
-        return iscompare;
-    }
+    if(
+            typeid(TypeOfMatrixElements) != typeid(float) ||
+            typeid(TypeOfMatrixElements) != typeid(double) ||
+            typeid(TypeOfMatrixElements) != typeid(long double)
+      )
+        if(rows == comparable_matrix.rows && columns == comparable_matrix.columns)
+        {
+            bool iscompare = true;
+            register int i, j;
+            for(i = 0; i < rows; ++i)
+                for(j = 0; j < columns; ++j)
+                    iscompare = (elements[i][j] == comparable_matrix.elements[i][j]) ? iscompare : false;
+            return iscompare;
+        }
+        else
+        {
+            return false;
+        }
     else
     {
-        return false;
+        throw MatrixTypeException();
     }
 }
 
