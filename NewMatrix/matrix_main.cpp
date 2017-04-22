@@ -8,15 +8,16 @@ int main()
 
     system("clear");
 
-    Matrix<int> matrix_a("A", 7, 7);
+    Matrix<int> matrix_a("A", 3, 3);
 
     matrix_a.SetElements();
 
     matrix_a.Show();
 
-    int det = matrix_a.GetDeterminant();
+    cout << "\n\n\tdet(A) = " << matrix_a.GetDeterminant();
 
-    cout << "\n\tDeterminant of matrix A = " << det << endl;
+    cout << setiosflags(ios::boolalpha) << "\n\n\thas same rows : " << matrix_a.HasSameRows();
+    cout << setiosflags(ios::boolalpha) << "\n\n\thas same columns : " << matrix_a.HasSameColumns();
 
     cout << "\n\n\tEnd of program\n";
 

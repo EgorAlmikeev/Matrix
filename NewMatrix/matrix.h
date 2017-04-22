@@ -54,13 +54,20 @@ public :
 
     void SetElements();
     void Transpose();
+
     void SwapRows(short row_a, short row_b);
     void SwapColumns(short column_a, short column_b);
+
     void StairStep();
+
     void Resize(const short _rows, const short _columns);
     void Reset();
-    TypeOfMatrixElements GetDeterminant();
+
+    bool HasSameRows();
+    bool HasSameColumns();
+
     Matrix GetMinor(short row, short column);
+    TypeOfMatrixElements GetDeterminant();
     TypeOfMatrixElements& EditElement(const short _row, const short _column);
 
     Matrix operator + (const Matrix& addable_matrix);
@@ -402,11 +409,11 @@ void Matrix<TypeOfMatrixElements>::Reset()
 template <class TypeOfMatrixElements>
 TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 {
-    static int counter = 0;
-    cout << "\n\tcall#" << counter++;
-
     if(rows != 2 && columns != 2)
     {
+        if(HasSameRows() || HasSameColumns())
+            return 0;
+
         TypeOfMatrixElements determinant = 0;
 
         for(int j = 0; j < columns; ++j)
@@ -462,6 +469,42 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(const short _row
     {
         throw MatrixArithmeticException();
     }
+}
+
+template <class TypeOfMatrixElements>
+bool Matrix<TypeOfMatrixElements>::HasSameRows()
+{
+    register int i, j, k;
+    bool find_same = true;
+
+    for(i = 0, find_same = true; i < rows; ++i)
+        for(j = i + 1, find_same = true; j < rows; ++j)
+            for(k = 0; k < columns; ++k)
+            {
+                find_same *= (elements[i][k] == elements[j][k]) ? true : false;
+                if(find_same)
+                    return true;
+            }
+
+    return false;
+}
+
+template <class TypeOfMatrixElements>
+bool Matrix<TypeOfMatrixElements>::HasSameColumns()
+{
+    register int i, j, k;
+    bool find_same = true;
+
+    for(i = 0, find_same = true; i < columns; ++i)
+        for(j = i + 1, find_same = true; j < columns; ++j)
+            for(k = 0; k < rows; ++k)
+            {
+                find_same *= (elements[k][i] == elements[k][j]) ? true : false;
+                if(find_same)
+                    return true;
+            }
+
+    return false;
 }
 
 //functios END
