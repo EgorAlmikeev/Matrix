@@ -411,8 +411,8 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 {
     if(rows != 2 && columns != 2)
     {
-        if(HasSameRows() || HasSameColumns())
-            return 0;
+//        if(HasSameRows() || HasSameColumns())
+//            return 0;
 
         TypeOfMatrixElements determinant = 0;
 
