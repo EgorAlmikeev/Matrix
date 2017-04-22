@@ -59,6 +59,7 @@ public :
     void StairStep();
     void Resize(const short _rows, const short _columns);
     void Reset();
+    TypeOfMatrixElements GetDeterminant();
     Matrix GetMinor(short row, short column);
     TypeOfMatrixElements& EditElement(const short _row, const short _column);
 
@@ -396,6 +397,24 @@ void Matrix<TypeOfMatrixElements>::Reset()
         delete [] elements;
         rows = columns = 0;
     }
+}
+
+template <class TypeOfMatrixElements>
+TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
+{
+    static int counter = 0;
+    cout << "\n\tcall#" << counter++;
+
+    if(rows != 2 && columns != 2)
+    {
+        TypeOfMatrixElements determinant = 0;
+
+        for(int j = 0; j < columns; ++j)
+            determinant += elements[0][j] * pow(-1, 1 + j + 1) * GetMinor(1, j + 1).GetDeterminant();
+        return determinant;
+    }
+    else
+        return elements[0][0] * elements[1][1] - elements[0][1] * elements[1][0];
 }
 
 template <class TypeOfMatrixElements>
