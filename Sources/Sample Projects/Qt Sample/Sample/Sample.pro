@@ -4,10 +4,10 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
-    functions_source.cpp
+    ../../../Library/functions_source.cpp
 
 HEADERS += \
-    functions_headers.h \
-    get_from_std_istream.h \
-    matrix.h \
-    stream_defines.h
+    ../../../Library/functions_headers.h \
+    ../../../Library/get_from_std_istream.h \
+    ../../../Library/matrix.h \
+    ../../../Library/stream_defines.h
