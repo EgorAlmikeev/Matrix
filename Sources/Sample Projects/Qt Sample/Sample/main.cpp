@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 #include "../../../Library/matrix.h"
 
 using namespace std;
@@ -15,6 +16,9 @@ int main()
     matrix_a.Show();
 
     cout << "\n\n\tdet(A) = " << matrix_a.GetDeterminant();
+
+    cout << setiosflags(ios::boolalpha) << "\n\thas same rows : " << matrix_a.HasSameRows();
+    cout << setiosflags(ios::boolalpha) << "\n\thas same columns : " << matrix_a.HasSameColumns();
 
     cout << "\n\n\tEnd of program\n";
 

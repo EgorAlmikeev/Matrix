@@ -479,12 +479,12 @@ bool Matrix<TypeOfMatrixElements>::HasSameRows()
 
     for(i = 0, find_same = true; i < rows; ++i)
         for(j = i + 1, find_same = true; j < rows; ++j)
+        {
             for(k = 0; k < columns; ++k)
-            {
                 find_same *= (elements[i][k] == elements[j][k]) ? true : false;
-                if(find_same)
-                    return true;
-            }
+            if(find_same)
+                return true;
+        }
 
     return false;
 }
@@ -497,12 +497,12 @@ bool Matrix<TypeOfMatrixElements>::HasSameColumns()
 
     for(i = 0, find_same = true; i < columns; ++i)
         for(j = i + 1, find_same = true; j < columns; ++j)
+        {
             for(k = 0; k < rows; ++k)
-            {
                 find_same *= (elements[k][i] == elements[k][j]) ? true : false;
-                if(find_same)
-                    return true;
-            }
+            if(find_same)
+                return true;
+        }
 
     return false;
 }
