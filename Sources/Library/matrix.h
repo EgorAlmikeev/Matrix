@@ -25,9 +25,30 @@ public :
     {
     public :
 
-        enum errorflag {add, deduct, multiplication, division, equal, unknown};
+        enum situation {culprit_x1, culprit_x2};
+        enum errorflag {add, deduct, multiplication, division, equal, determinant, unknown};
+        situation sit;
+        errorflag flag;
+        Matrix *culprit_1;
+        Matrix *culprit_2;
 
-        static inline void errormsg(const Matrix& first_culprit, const Matrix& second_culprit, errorflag flag)
+        MatrixArithmeticException(Matrix *first_culprit, Matrix *second_culprit, situation s, errorflag f) : culprit_1(first_culprit), culprit_2(second_culprit), sit(s), flag(f)
+        {}
+        MatrixArithmeticException(Matrix *first_culprit, situation s, errorflag f) : culprit_1(first_culprit), culprit_2(nullptr), sit(s), flag(f)
+        {}
+
+        inline void errmsg()
+        {
+            switch(sit)
+            {
+            case culprit_x1 : errormsg_one_culprit(); break;
+            case culprit_x2 : errormsg_two_culprits(); break;
+            }
+        }
+
+    private :
+
+        inline void errormsg_two_culprits()
         {
             string what_happened;
 
@@ -36,18 +57,59 @@ public :
             case add : what_happened = " CAN'T ADD "; break;
             case deduct : what_happened = " CAN'T DEDUCT "; break;
             case multiplication : what_happened = " CAN'T MULTIPLICATE "; break;
+            case division : what_happened = " CAN'T DIVISOR "; break;
             case equal : what_happened = " CAN'T EQUAL "; break;
-            case unknown : what_happened = " CAN'T CONCRETIZE ERROR "; break;
+            default : what_happened = " NON CONCRETIZE ERROR "; break;
             }
 
-            STD_ERROR_STREAM << "\n#error [arithmetic] : " << what_happened << "\"" << first_culprit.name << "\""
-                             << "[" << first_culprit.rows << "][" << first_culprit.columns << "] and "
-                             << "\"" << second_culprit.name << "\""
-                             << "[" << second_culprit.rows << "][" << second_culprit.columns << "]\n";
+            STD_ERROR_STREAM << "\n#error [arithmetic] : " << what_happened << "\"" << culprit_1->name << "\""
+                             << "[" << culprit_1->rows << "][" << culprit_1->columns << "] and "
+                             << "\"" << culprit_2->name << "\""
+                             << "[" << culprit_2->rows << "][" << culprit_2->columns << "]\n";
+            exit(1);
+        }
+
+        inline void errormsg_one_culprit()
+        {
+            string what_happened;
+
+            switch(flag)
+            {
+            case determinant : what_happened = " CAN'T GET DETERMINANT "; break;
+            default : what_happened = " NON CONCRETIZE ERROR "; break;
+            }
+
+            STD_ERROR_STREAM << "\n#error [arithmetic] : " << what_happened << "\"" << culprit_1->name << "\""
+                             << "[" << culprit_1->rows << "][" << culprit_1->columns << "]\n";
             exit(1);
         }
     };
-    class MatrixAccessException {};
+    class MatrixAccessException
+    {
+    public :
+
+        short place_1;
+        short place_2;
+        enum situation {row_col, row_row, col_col};
+        situation sit;
+        Matrix *culprit;
+
+        MatrixAccessException(short first_place, short second_place, Matrix *culp, situation f) : place_1(first_place), place_2(second_place), culprit(culp), sit(f)
+        {}
+
+        inline void errmsg()
+        {
+            switch(sit)
+            {
+            case row_col : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX " << culprit->name << " ROW : " << place_1 << " COLUMN : " << place_2 << endl; break;
+            case row_row : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX " << culprit->name << " ROW : " << place_1 << " ROW : " << place_2 << endl; break;
+            case col_col : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX " << culprit->name << "COLUMN : " << place_2 << " COLUMN : " << place_2 << endl; break;
+            }
+
+            exit(1);
+        }
+
+    };
     class MatrixTypeException {};
 
     void Show();
@@ -70,11 +132,11 @@ public :
     TypeOfMatrixElements GetDeterminant();
     TypeOfMatrixElements& EditElement(const short _row, const short _column);
 
-    Matrix operator + (const Matrix& addable_matrix);
-    Matrix operator - (const Matrix& deductible_matrix);
-    Matrix operator * (const Matrix& multiplier_matrix);
-    Matrix operator / (const Matrix& divisor_matrix);
-    Matrix operator % (const Matrix& divisor_matrix);
+    Matrix operator + (Matrix& addable_matrix);
+    Matrix operator - (Matrix& deductible_matrix);
+    Matrix operator * (Matrix& multiplier_matrix);
+    Matrix operator / (Matrix& divisor_matrix);
+    Matrix operator % (Matrix& divisor_matrix);
 
     bool operator == (const Matrix& comparable_matrix);
 
@@ -330,7 +392,7 @@ void Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
 
     if(row_a < rows && row_b < rows && row_a >= 0 && row_b >= 0)
         swap(elements[row_a], elements[row_b]);
-    else throw MatrixAccessException();
+    else throw MatrixAccessException(row_a + 1, row_b + 1, this, MatrixAccessException::row_row);
 }
 
 template <class TypeOfMatrixElements>
@@ -348,7 +410,7 @@ void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
                 if(j == column_a)
                     swap(elements[i][j], elements[i][column_b]);
     }
-    else throw MatrixAccessException();
+    else throw MatrixAccessException(column_a + 1, column_b + 1, this, MatrixAccessException::col_col);
 }
 
 template <class TypeOfMatrixElements>
@@ -388,7 +450,7 @@ void Matrix<TypeOfMatrixElements>::Resize(const short _rows, const short _column
     }
     else
     {
-        throw MatrixAccessException();
+        throw MatrixAccessException(_rows, _columns, this, MatrixAccessException::row_col);
     }
 
 }
@@ -409,6 +471,9 @@ void Matrix<TypeOfMatrixElements>::Reset()
 template <class TypeOfMatrixElements>
 TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 {
+    if(rows != columns)
+        throw MatrixArithmeticException(this, MatrixArithmeticException::culprit_x1, MatrixArithmeticException::determinant);
+
     if(rows != 2 && columns != 2)
     {
         if(HasSameRows() || HasSameColumns())
@@ -420,7 +485,6 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
             determinant += elements[0][j] * pow(-1, 1 + j + 1) * GetMinor(1, j + 1).GetDeterminant();
         return determinant;
     }
-
     else if(rows == 3 && columns == 3)
     {
         TypeOfMatrixElements determinant;
@@ -434,7 +498,6 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 
         return determinant;
     }
-
     else
         return elements[0][0] * elements[1][1] - elements[0][1] * elements[1][0];
 }
@@ -469,7 +532,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short exclud
     }
     else
     {
-        throw MatrixAccessException();
+        throw MatrixAccessException(excluded_row + 1, excluded_column + 1, this, MatrixAccessException::row_col);
     }
 }
 
@@ -482,7 +545,7 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(const short _row
     }
     else
     {
-        throw MatrixArithmeticException();
+        throw MatrixAccessException(_row, _column, this, MatrixAccessException::row_col);
     }
 }
 
@@ -558,7 +621,7 @@ bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElement
 //operators/arithmetic
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Matrix<TypeOfMatrixElements>& addable_matrix)
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (Matrix<TypeOfMatrixElements>& addable_matrix)
 {
     if(rows == addable_matrix.rows && columns == addable_matrix.columns)
     {
@@ -571,12 +634,12 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (const Mat
     }
     else
     {
-        throw MatrixArithmeticException();
+        throw MatrixArithmeticException(this, &addable_matrix, MatrixArithmeticException::culprit_x2, MatrixArithmeticException::add);
     }
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (const Matrix<TypeOfMatrixElements>& deductible_matrix)
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (Matrix<TypeOfMatrixElements>& deductible_matrix)
 {
     if(rows == deductible_matrix.rows && columns == deductible_matrix.columns)
     {
@@ -589,12 +652,12 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (const Mat
     }
     else
     {
-        throw MatrixArithmeticException();
+        throw MatrixArithmeticException(this, &deductible_matrix, MatrixArithmeticException::culprit_x2, MatrixArithmeticException::deduct);
     }
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (const Matrix<TypeOfMatrixElements>& multiplier_matrix)
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (Matrix<TypeOfMatrixElements>& multiplier_matrix)
 {
     if(columns == multiplier_matrix.rows)
     {
@@ -612,12 +675,12 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (const Mat
     }
     else
     {
-        throw MatrixArithmeticException();
+        throw MatrixArithmeticException(this, &multiplier_matrix, MatrixArithmeticException::culprit_x2, MatrixArithmeticException::multiplication);
     }
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator / (const Matrix<TypeOfMatrixElements>& divisor_matrix)
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator / (Matrix<TypeOfMatrixElements>& divisor_matrix)
 {
     if(rows == divisor_matrix.rows && columns == divisor_matrix.columns)
     {
@@ -630,12 +693,12 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator / (const Mat
     }
     else
     {
-        throw MatrixArithmeticException();
+        throw MatrixArithmeticException(this, &divisor_matrix, MatrixArithmeticException::culprit_x2, MatrixArithmeticException::division);
     }
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator % (const Matrix<TypeOfMatrixElements>& divisor_matrix)
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator % (Matrix<TypeOfMatrixElements>& divisor_matrix)
 {
     if(rows == divisor_matrix.rows && columns == divisor_matrix.columns)
     {
@@ -648,7 +711,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator % (const Mat
     }
     else
     {
-        throw MatrixArithmeticException();
+        throw MatrixArithmeticException(this, &divisor_matrix, MatrixArithmeticException::culprit_x2, MatrixArithmeticException::division);
     }
 }
 

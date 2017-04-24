@@ -10,15 +10,24 @@ int main()
     system("clear");
 
     Matrix<int> matrix_a("A", 3, 3);
+    Matrix<int> matrix_b("B", 2, 2);
 
-    matrix_a.SetElements();
-
-    matrix_a.Show();
-
-    cout << "\n\n\tdet(A) = " << matrix_a.GetDeterminant();
-
-    cout << setiosflags(ios::boolalpha) << "\n\thas same rows : " << matrix_a.HasSameRows();
-    cout << setiosflags(ios::boolalpha) << "\n\thas same columns : " << matrix_a.HasSameColumns();
+    try
+    {
+        matrix_a + matrix_b;
+        matrix_a - matrix_b;
+        matrix_a * matrix_b;
+        matrix_a / matrix_b;
+        matrix_a % matrix_b;
+    }
+    catch(Matrix<int>::MatrixArithmeticException exp)
+    {
+        exp.errmsg();
+    }
+    catch(Matrix<int>::MatrixAccessException exp)
+    {
+        exp.errmsg();
+    }
 
     cout << "\n\n\tEnd of program\n";
 
