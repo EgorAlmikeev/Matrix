@@ -115,7 +115,7 @@ public :
     void Show();
 
     void SetElements();
-    void Transpose();
+    Matrix& Transpose();
 
     void SwapRows(short row_a, short row_b);
     void SwapColumns(short column_a, short column_b);
@@ -129,6 +129,7 @@ public :
     bool HasSameColumns();
 
     Matrix GetMinor(short row, short column);
+    Matrix GetAdjoint();
     Matrix Multiplicate(Matrix& multiplier_matrix);
 
     TypeOfMatrixElements GetCompliment(short row, short column);
@@ -322,7 +323,7 @@ short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
     longest_element_size += (sign) ? 1 : 0;
     longest_element_size += (integer) ? 0 : 2;
 
-    return longest_element_size + 1;
+    return longest_element_size + 2;
 }
 
 template <class TypeOfMatrixElements>
@@ -377,7 +378,7 @@ void Matrix<TypeOfMatrixElements>::SetElements()
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::Transpose()
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
     register int i, j;
@@ -385,6 +386,7 @@ void Matrix<TypeOfMatrixElements>::Transpose()
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = elements[j][i];
     *this = temp;
+    return *this;
 }
 
 template <class TypeOfMatrixElements>
@@ -532,6 +534,19 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::Multiplicate(Matrix<T
     {
         throw MatrixArithmeticException(this, &multiplier_matrix, MatrixArithmeticException::culprit_x2, MatrixArithmeticException::multiplication);
     }
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetAdjoint()
+{
+    Matrix<TypeOfMatrixElements> Adjoint("ADJOINT", rows, columns);
+    register int i, j;
+
+    for(i = 0; i < rows; ++i)
+        for(j = 0; j < columns; ++j)
+            Adjoint.EditElement(i + 1, j + 1) = GetCompliment(i + 1, j + 1);
+
+    return Adjoint.Transpose();
 }
 
 template <class TypeOfMatrixElements>

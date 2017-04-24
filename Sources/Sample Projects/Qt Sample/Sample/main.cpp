@@ -11,11 +11,12 @@ int main()
 
     Matrix<int> matrix_a("A", 3, 3);
 //    Matrix<int> matrix_b("B", 3, 3);
-//    Matrix<int> matrix_c("C", 3, 3);
+    Matrix<int> matrix_c("C", 3, 3);
 
     try
     {
         matrix_a.SetElements();
+        matrix_a.Show();
 
 //        matrix_a + matrix_b;
 //        matrix_a - matrix_b;
@@ -32,7 +33,8 @@ int main()
 //        matrix_c = matrix_a.Multiplicate(matrix_b);
 //        matrix_c.Show();
 
-        cout << matrix_a.GetCompliment(4, 1);
+        matrix_c = matrix_a.GetAdjoint();
+        matrix_c.Show();
     }
     catch(Matrix<int>::MatrixArithmeticException exp)
     {
