@@ -101,9 +101,9 @@ public :
         {
             switch(sit)
             {
-            case row_col : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX " << culprit->name << " ROW : " << place_1 << " COLUMN : " << place_2 << endl; break;
-            case row_row : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX " << culprit->name << " ROW : " << place_1 << " ROW : " << place_2 << endl; break;
-            case col_col : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX " << culprit->name << "COLUMN : " << place_2 << " COLUMN : " << place_2 << endl; break;
+            case row_col : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" ROW : " << place_1 << " COLUMN : " << place_2 << endl; break;
+            case row_row : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" ROW : " << place_1 << " ROW : " << place_2 << endl; break;
+            case col_col : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" COLUMN : " << place_1 << " COLUMN : " << place_2 << endl; break;
             }
 
             exit(1);
@@ -129,6 +129,7 @@ public :
     bool HasSameColumns();
 
     Matrix GetMinor(short row, short column);
+    Matrix Multiplicate(Matrix& multiplier_matrix);
     TypeOfMatrixElements GetDeterminant();
     TypeOfMatrixElements& EditElement(const short _row, const short _column);
 
@@ -503,6 +504,29 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 }
 
 template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::Multiplicate(Matrix<TypeOfMatrixElements>& multiplier_matrix)
+{
+    if(columns == multiplier_matrix.rows)
+    {
+        Matrix<TypeOfMatrixElements> temp("TEMP", rows, multiplier_matrix.columns);
+        register int i, j, k;
+        for(i = 0; i < rows; ++i)
+            for(j = 0; j < multiplier_matrix.columns; ++j)
+            {
+                TypeOfMatrixElements sum = static_cast<TypeOfMatrixElements>(0);
+                for(k = 0; k < rows; ++k)
+                    sum += elements[i][k] * multiplier_matrix.elements[k][i];
+                temp.elements[i][j] = sum;
+            }
+        return temp;
+    }
+    else
+    {
+        throw MatrixArithmeticException(this, &multiplier_matrix, MatrixArithmeticException::culprit_x2, MatrixArithmeticException::multiplication);
+    }
+}
+
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short excluded_row, short excluded_column)
 {
     Matrix<TypeOfMatrixElements> minor("MINOR", rows - 1, columns - 1);
@@ -659,18 +683,13 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (Matrix<Ty
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (Matrix<TypeOfMatrixElements>& multiplier_matrix)
 {
-    if(columns == multiplier_matrix.rows)
+    if(rows == multiplier_matrix.rows && columns == multiplier_matrix.columns)
     {
-        Matrix<TypeOfMatrixElements> temp("TEMP", rows, multiplier_matrix.columns);
-        register int i, j, k;
+        Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
+        register int i, j;
         for(i = 0; i < rows; ++i)
-            for(j = 0; j < multiplier_matrix.columns; ++j)
-            {
-                TypeOfMatrixElements sum = static_cast<TypeOfMatrixElements>(0);
-                for(k = 0; k < rows; ++k)
-                    sum += elements[i][k] * multiplier_matrix.elements[k][i];
-                temp.elements[i][j] = sum;
-            }
+            for(j = 0; j < columns; ++j)
+                temp.elements[i][j] = elements[i][j] * multiplier_matrix.elements[i][j];
         return temp;
     }
     else
