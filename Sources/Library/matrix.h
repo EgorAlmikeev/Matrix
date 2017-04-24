@@ -130,8 +130,10 @@ public :
 
     Matrix GetMinor(short row, short column);
     Matrix Multiplicate(Matrix& multiplier_matrix);
+
+    TypeOfMatrixElements GetCompliment(short row, short column);
     TypeOfMatrixElements GetDeterminant();
-    TypeOfMatrixElements& EditElement(const short _row, const short _column);
+    TypeOfMatrixElements& EditElement(const short row, const short column);
 
     Matrix operator + (Matrix& addable_matrix);
     Matrix operator - (Matrix& deductible_matrix);
@@ -470,6 +472,12 @@ void Matrix<TypeOfMatrixElements>::Reset()
 }
 
 template <class TypeOfMatrixElements>
+TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetCompliment(short row, short column)
+{
+    return pow(-1, row + column) * GetMinor(row, column).GetDeterminant();
+}
+
+template <class TypeOfMatrixElements>
 TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 {
     if(rows != columns)
@@ -561,15 +569,15 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short exclud
 }
 
 template <class TypeOfMatrixElements>
-TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(const short _row, const short _column)
+TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(const short row, const short column)
 {
-    if(_row <= rows && _row > 0 && _column <= columns && _column > 0)
+    if(row <= rows && row > 0 && column <= columns && column > 0)
     {
-        return elements[_row - 1][_column - 1];
+        return elements[row - 1][column - 1];
     }
     else
     {
-        throw MatrixAccessException(_row, _column, this, MatrixAccessException::row_col);
+        throw MatrixAccessException(row, column, this, MatrixAccessException::row_col);
     }
 }
 
