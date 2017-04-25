@@ -482,34 +482,37 @@ template <class TypeOfMatrixElements>
 TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 {
     if(rows != columns)
-        throw MatrixArithmeticException(this, MatrixArithmeticException::culprit_x1, MatrixArithmeticException::determinant);
+            throw MatrixArithmeticException(this, MatrixArithmeticException::culprit_x1, MatrixArithmeticException::determinant);
 
-    if(rows != 2 && columns != 2)
-    {
-        if(HasSameRows() || HasSameColumns())
-            return 0;
+        if(rows >= 4 && columns >= 4)
+        {
+            if(HasSameRows() || HasSameColumns())
+                return 0;
 
-        TypeOfMatrixElements determinant = 0;
+            TypeOfMatrixElements determinant = 0;
 
-        for(int j = 0; j < columns; ++j)
-            determinant += elements[0][j] * pow(-1, 1 + j + 1) * GetMinor(1, j + 1).GetDeterminant();
-        return determinant;
-    }
-    else if(rows == 3 && columns == 3)
-    {
-        TypeOfMatrixElements determinant;
+            for(int j = 0; j < columns; ++j)
+                determinant += elements[0][j] * pow(-1, 1 + j + 1) * GetMinor(1, j + 1).GetDeterminant();
+            return determinant;
+        }
+        else if(rows == 3 && columns == 3)
+        {
+            TypeOfMatrixElements determinant;
 
-        determinant = elements[0][0] * elements[1][1] * elements[2][2] +
-                elements[1][0] * elements[2][1] * elements[0][2] +
-                elements[0][1] * elements[1][2] * elements[2][0] -
-                elements[0][2] * elements[1][1] * elements[2][0] -
-                elements[1][2] * elements[2][1] * elements[0][0] -
-                elements[0][1] * elements[1][0] * elements[2][2];
+            determinant = elements[0][0] * elements[1][1] * elements[2][2] +
+                    elements[1][0] * elements[2][1] * elements[0][2] +
+                    elements[0][1] * elements[1][2] * elements[2][0] -
+                    elements[0][2] * elements[1][1] * elements[2][0] -
+                    elements[1][2] * elements[2][1] * elements[0][0] -
+                    elements[0][1] * elements[1][0] * elements[2][2];
 
-        return determinant;
-    }
-    else
-        return elements[0][0] * elements[1][1] - elements[0][1] * elements[1][0];
+            return determinant;
+        }
+        else if(rows == 2 && columns == 2)
+            return elements[0][0] * elements[1][1] - elements[0][1] * elements[1][0];
+        else
+            return elements[0][0];
+
 }
 
 template <class TypeOfMatrixElements>
