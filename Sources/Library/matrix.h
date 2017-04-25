@@ -380,12 +380,11 @@ void Matrix<TypeOfMatrixElements>::SetElements()
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 {
-    Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
     register int i, j;
-    for(i = 0; i < temp.rows; ++i)
-        for(j = 0; j < temp.columns; ++j)
-            temp.elements[i][j] = elements[j][i];
-    *this = temp;
+    for(i = 0; i < rows; ++i)
+        for(j = 0; j < columns; ++j)
+            swap(elements[i][j], elements[j][i]);
+
     return *this;
 }
 
