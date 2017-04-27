@@ -117,13 +117,13 @@ public :
     void SetElements();
     Matrix& Transpose();
 
-    void SwapRows(short row_a, short row_b);
-    void SwapColumns(short column_a, short column_b);
+    Matrix& SwapRows(short row_a, short row_b);
+    Matrix& SwapColumns(short column_a, short column_b);
 
-    void StairStep();
+    Matrix& StairStep();
 
-    void Resize(const short _rows, const short _columns);
-    void Reset();
+    Matrix& Resize(const short _rows, const short _columns);
+    void ResestIfNotEmpty();
 
     bool HasSameRows();
     bool HasSameColumns();
@@ -131,6 +131,7 @@ public :
     Matrix GetMinor(short row, short column);
     Matrix GetAdjoint();
     Matrix Multiplicate(Matrix& multiplier_matrix);
+    Matrix& SetFill(TypeOfMatrixElements fill_elements);
 
     TypeOfMatrixElements GetCompliment(short row, short column);
     TypeOfMatrixElements GetDeterminant();
@@ -145,7 +146,6 @@ public :
     bool operator == (const Matrix& comparable_matrix);
 
     Matrix& operator = (const Matrix& equalable_matrix);
-    Matrix& operator = (const TypeOfMatrixElements& equalable_element);
 
     Matrix& operator += (const Matrix& addable_matrix);
     Matrix& operator += (const TypeOfMatrixElements& addable_element);
@@ -207,7 +207,6 @@ Matrix<TypeOfMatrixElements>::Matrix()
     rows = 0;
     columns = 0;
     name = "EMPTY";
-
     elements = nullptr;
 }
 
@@ -216,7 +215,7 @@ Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matri
 {
     register int i, j;
 
-    this->Reset();
+    this->ResestIfNotEmpty();
 
     try
     {
@@ -389,18 +388,21 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
 {
     --row_a;
     --row_b;
 
     if(row_a < rows && row_b < rows && row_a >= 0 && row_b >= 0)
+    {
         swap(elements[row_a], elements[row_b]);
+        return *this;
+    }
     else throw MatrixAccessException(row_a + 1, row_b + 1, this, MatrixAccessException::row_row);
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
 {
     register int i, j;
 
@@ -413,12 +415,23 @@ void Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
             for(j = 0; j < columns; ++j)
                 if(j == column_a)
                     swap(elements[i][j], elements[i][column_b]);
+        return *this;
     }
     else throw MatrixAccessException(column_a + 1, column_b + 1, this, MatrixAccessException::col_col);
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::Resize(const short _rows, const short _columns)
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SetFill(TypeOfMatrixElements fill_elements)
+{
+    register int i, j;
+    for(i = 0; i < rows; ++i)
+        for(j = 0; j < columns; ++j)
+            elements[i][j] = fill_elements;
+    return *this;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Resize(const short _rows, const short _columns)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", _rows, _columns);
     register int i, j;
@@ -451,6 +464,7 @@ void Matrix<TypeOfMatrixElements>::Resize(const short _rows, const short _column
         }
 
         *this = temp;
+        return *this;
     }
     else
     {
@@ -460,7 +474,7 @@ void Matrix<TypeOfMatrixElements>::Resize(const short _rows, const short _column
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::Reset()
+void Matrix<TypeOfMatrixElements>::ResestIfNotEmpty()
 {
     if(rows != 0 && columns != 0 && elements != nullptr)
     {
@@ -541,20 +555,20 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::Multiplicate(Matrix<T
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetAdjoint()
 {
-    Matrix<TypeOfMatrixElements> Adjoint("ADJOINT", rows, columns);
+    Matrix<TypeOfMatrixElements> adjoint_matrix("ADJOINT", rows, columns);
     register int i, j;
 
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
-            Adjoint.EditElement(i + 1, j + 1) = GetCompliment(i + 1, j + 1);
+            adjoint_matrix.EditElement(i + 1, j + 1) = GetCompliment(i + 1, j + 1);
 
-    return Adjoint.Transpose();
+    return adjoint_matrix.Transpose();
 }
 
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short excluded_row, short excluded_column)
 {
-    Matrix<TypeOfMatrixElements> minor("MINOR", rows - 1, columns - 1);
+    Matrix<TypeOfMatrixElements> minor_matrix("MINOR", rows - 1, columns - 1);
     register int i = 0, j = 0, minor_row = 0, minor_column = 0;
 
     --excluded_row;
@@ -568,8 +582,8 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short exclud
                 for(j = 0; j < columns; ++j)
                     if(j != excluded_column)
                     {
-                        minor.elements[minor_row][minor_column] = elements[i][j];
-                        if(minor_column + 1 == minor.columns)
+                        minor_matrix.elements[minor_row][minor_column] = elements[i][j];
+                        if(minor_column + 1 == minor_matrix.columns)
                         {
                             ++minor_row;
                             minor_column = 0;
@@ -577,7 +591,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short exclud
                         else
                             ++minor_column;
                     }
-        return minor;
+        return minor_matrix;
     }
     else
     {
@@ -764,7 +778,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
 {
     register int i, j;
 
-    this->Reset();
+    this->ResestIfNotEmpty();
 
     try
     {
@@ -784,16 +798,6 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
     {
         STD_CRITICAL_STREAM << "\n#error : CAN'T ALLOC MEMORY\n";
     }
-    return *this;
-}
-
-template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const TypeOfMatrixElements& equalable_element)
-{
-    register int i, j;
-    for(i = 0; i < rows; ++i)
-        for(j = 0; j < columns; ++j)
-            elements[i][j] = equalable_element;
     return *this;
 }
 

@@ -7,16 +7,19 @@ using namespace std;
 int main()
 {
 
+    typedef int MatrixType;
+//    typedef double MatrixType;
+
     system("clear");
 
-    Matrix<int> matrix_a("A", 3, 3);
-//    Matrix<int> matrix_b("B", 3, 3);
-    Matrix<int> matrix_c("C", 3, 3);
+    Matrix<MatrixType> matrix_a("A", 3, 3);
+    Matrix<MatrixType> matrix_b("B", 3, 3);
+    Matrix<MatrixType> matrix_c;
 
     try
     {
-        matrix_a.SetElements();
-        matrix_a.Show();
+//        matrix_a.SetElements();
+//        matrix_a.Show();
 
 //        matrix_a + matrix_b;
 //        matrix_a - matrix_b;
@@ -33,14 +36,17 @@ int main()
 //        matrix_c = matrix_a.Multiplicate(matrix_b);
 //        matrix_c.Show();
 
-        matrix_c = matrix_a.GetAdjoint();
-        matrix_c.Show();
+//        matrix_c = matrix_a.GetAdjoint();
+//        matrix_c.Show();
+
+        matrix_b = matrix_a.SetFill(9);
+        matrix_b.Show();
     }
-    catch(Matrix<int>::MatrixArithmeticException exp)
+    catch(Matrix<MatrixType>::MatrixArithmeticException exp)
     {
         exp.errmsg();
     }
-    catch(Matrix<int>::MatrixAccessException exp)
+    catch(Matrix<MatrixType>::MatrixAccessException exp)
     {
         exp.errmsg();
     }
