@@ -127,6 +127,7 @@ public :
 
     Matrix GetMinor(short row, short column);
     Matrix GetAdjoint();
+    Matrix GetReverse();
     Matrix Multiplicate(Matrix& multiplier_matrix);
 
     Matrix operator + (Matrix& addable_matrix);
@@ -525,6 +526,14 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 }
 
 template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetReverse()
+{
+    Matrix<TypeOfMatrixElements> reverse_matrix("REVERSE", rows, columns);
+    reverse_matrix = GetAdjoint() / GetDeterminant();
+    return reverse_matrix;
+}
+
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::Multiplicate(Matrix<TypeOfMatrixElements>& multiplier_matrix)
 {
     if(columns == multiplier_matrix.rows)
@@ -552,12 +561,10 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetAdjoint()
 {
     Matrix<TypeOfMatrixElements> adjoint_matrix("ADJOINT", rows, columns);
     register int i, j;
-
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
-            adjoint_matrix.EditElement(i + 1, j + 1) = GetCompliment(i + 1, j + 1);
-
-    return adjoint_matrix.Transpose();
+            adjoint_matrix.EditElement(i + 1, j + 1) = GetCompliment(j + 1, i + 1);
+    return adjoint_matrix;
 }
 
 template <class TypeOfMatrixElements>

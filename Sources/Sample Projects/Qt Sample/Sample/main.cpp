@@ -7,8 +7,8 @@ using namespace std;
 int main()
 {
 
-    typedef int MatrixType;
-//    typedef double MatrixType;
+//    typedef int MatrixType;
+    typedef double MatrixType;
 
     system("clear");
 
@@ -18,29 +18,17 @@ int main()
 
     try
     {
-//        matrix_a.SetElements();
-//        matrix_a.Show();
+        matrix_a.SetElements();
+//        int counter = 0;
 
-//        matrix_a + matrix_b;
-//        matrix_a - matrix_b;
-//        matrix_a * matrix_b;
-//        matrix_a / matrix_b;
-//        matrix_a % matrix_b;
+//        for(int i = 0; i < 3; ++i)
+//            for(int j = 0; j < 3; ++j)
+//                matrix_a.EditElement(i + 1, j + 1) = ++counter;
 
-//        matrix_a.SwapColumns(10, 9);
-//        matrix_a.SwapRows(-2, 6);
-
-//        matrix_c = matrix_a * matrix_b;
-//        matrix_c.Show();
-
-//        matrix_c = matrix_a.Multiplicate(matrix_b);
-//        matrix_c.Show();
-
-//        matrix_c = matrix_a.GetAdjoint();
-//        matrix_c.Show();
-
-        matrix_b = matrix_a.SetFill(9);
-        matrix_b.Show();
+        matrix_c = matrix_a.GetAdjoint();
+        matrix_c.Show();
+        matrix_c = matrix_a.GetReverse();
+        matrix_c.Show();
     }
     catch(Matrix<MatrixType>::MatrixArithmeticException exp)
     {
