@@ -110,20 +110,15 @@ public :
         }
 
     };
-    class MatrixTypeException {};
+    class MatrixTypeException
+    {};
 
     void Show();
-
     void SetElements();
-    Matrix& Transpose();
-
-    Matrix& StairStep();
-
     void ResestIfNotEmpty();
 
     bool HasSameRows();
     bool HasSameColumns();
-
     bool operator == (const Matrix& comparable_matrix);
 
     TypeOfMatrixElements GetCompliment(short row, short column);
@@ -140,11 +135,12 @@ public :
     Matrix operator / (Matrix& divisor_matrix);
     Matrix operator % (Matrix& divisor_matrix);
 
+    Matrix& Transpose();
+    Matrix& StairStep();
     Matrix& SwapRows(short row_a, short row_b);
     Matrix& SwapColumns(short column_a, short column_b);
     Matrix& SetFill(TypeOfMatrixElements fill_element);
     Matrix& Resize(short new_rows, short new_columns);
-
     Matrix& operator = (const Matrix& equalable_matrix);
     Matrix& operator += (const Matrix& addable_matrix);
     Matrix& operator += (const TypeOfMatrixElements& addable_element);
