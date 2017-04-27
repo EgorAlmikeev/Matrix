@@ -7,27 +7,19 @@ using namespace std;
 int main()
 {
 
-//    typedef int MatrixType;
-    typedef double MatrixType;
+    typedef int MatrixType;
 
     system("clear");
 
     Matrix<MatrixType> matrix_a("A", 3, 3);
-    Matrix<MatrixType> matrix_b("B", 3, 3);
-    Matrix<MatrixType> matrix_c;
+    Matrix<MatrixType> matrix_c("RESULT");
 
     try
     {
         matrix_a.SetElements();
-//        int counter = 0;
-
-//        for(int i = 0; i < 3; ++i)
-//            for(int j = 0; j < 3; ++j)
-//                matrix_a.EditElement(i + 1, j + 1) = ++counter;
+        matrix_a.Show();
 
         matrix_c = matrix_a.GetAdjoint();
-        matrix_c.Show();
-        matrix_c = matrix_a.GetReverse();
         matrix_c.Show();
     }
     catch(Matrix<MatrixType>::MatrixArithmeticException exp)

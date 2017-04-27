@@ -16,6 +16,7 @@ class Matrix
 public :
 
     Matrix();
+    Matrix(string _name);
     Matrix(Matrix& copying_matrix);
     Matrix(string _name, int _rows, int _columns);
 
@@ -119,6 +120,8 @@ public :
 
     bool HasSameRows();
     bool HasSameColumns();
+    bool HasNullRows();
+    bool HasNullColumns();
     bool operator == (const Matrix& comparable_matrix);
 
     TypeOfMatrixElements GetCompliment(short row, short column);
@@ -203,6 +206,15 @@ Matrix<TypeOfMatrixElements>::Matrix()
     rows = 0;
     columns = 0;
     name = "EMPTY";
+    elements = nullptr;
+}
+
+template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>::Matrix(string _name)
+{
+    rows = 0;
+    columns = 0;
+    name = _name;
     elements = nullptr;
 }
 
@@ -496,7 +508,7 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 
         if(rows >= 4 && columns >= 4)
         {
-            if(HasSameRows() || HasSameColumns())
+            if(HasSameRows() || HasSameColumns() || HasNullRows() || HasNullColumns())
                 return 0;
 
             TypeOfMatrixElements determinant = 0;
@@ -614,6 +626,8 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(short row, short
     }
 }
 
+//functions/bool
+
 template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::HasSameRows()
 {
@@ -649,6 +663,38 @@ bool Matrix<TypeOfMatrixElements>::HasSameColumns()
 
     return false;
 }
+
+template <class TypeOfMatrixElements>
+bool Matrix<TypeOfMatrixElements>::HasNullRows()
+{
+    register int i, j;
+    bool is_null;
+
+    for(i = 0, is_null = true; i < rows; ++i)
+    {
+        for(j = 0; j < columns; ++j)
+            is_null *= (elements[i][j] == 0) ? true : false;
+        if(is_null)
+            return is_null;
+    }
+}
+
+template <class TypeOfMatrixElements>
+bool Matrix<TypeOfMatrixElements>::HasNullColumns()
+{
+    register int i, j;
+    bool is_null;
+
+    for(i = 0, is_null = true; i < columns; ++i)
+    {
+        for(j = 0; j < rows; ++j)
+            is_null *= (elements[j][i] == 0) ? true : false;
+        if(is_null)
+            return is_null;
+    }
+}
+
+//functions/bool END
 
 //functios END
 
