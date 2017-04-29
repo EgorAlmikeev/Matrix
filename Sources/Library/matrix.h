@@ -401,7 +401,22 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
 {
+    register int i, j, k, l;
 
+    SwapRows(1, GetMinRow());
+
+    for(i = 0, k = 0; i < rows - 1; ++i, ++k)
+        for(j = i + 1; j < rows; ++j)
+        {
+            if(elements[j][k] != 0)
+            {
+                TypeOfMatrixElements coefficient = elements[j][k] / elements[i][k];
+                for(l = k; l < columns; ++l)
+                    elements[j][l] -= elements[i][l] * coefficient;
+            }
+        }
+
+    return *this;
 }
 
 template <class TypeOfMatrixElements>

@@ -7,19 +7,22 @@ using namespace std;
 int main()
 {
 
-    typedef int MatrixType;
+    typedef double MatrixType;
 
     system("clear");
 
-    Matrix<MatrixType> matrix_a("A", 3, 3);
-    Matrix<MatrixType> matrix_c("Minor");
+    Matrix<MatrixType> matrix_a("A", 20, 20);
 
     try
     {
-        matrix_a.SetElements();
+        for(int i = 0, counter = 1; i < 20; ++i)
+            for(int j = 0; j < 20; ++j, ++counter)
+                matrix_a.EditElement(i + 1, j + 1) = counter;
+
         matrix_a.Show();
 
-        cout << "\n\tMin row of matrix A = " << matrix_a.GetMinRow();
+        matrix_a.StairStep();
+        matrix_a.Show();
     }
     catch(Matrix<MatrixType>::MatrixArithmeticException exp)
     {
