@@ -8,11 +8,10 @@ int main()
 {
 //    system("clear");
 
-    int rows, columns = rows = 4;
     typedef double MatrixType;
 
 
-    Matrix<MatrixType> matrix_a("A", rows, columns);
+    Matrix<MatrixType> matrix_a("A", 6, 4);
 
 
     try
@@ -20,10 +19,13 @@ int main()
         matrix_a.SetElements();
         matrix_a.Show();
 
+//        matrix_a.StairStep();
+//        matrix_a.Show();
+
+        cout << "\n\tMatrix A has rank : " << matrix_a.GetRank();
+
         matrix_a.StairStep();
         matrix_a.Show();
-
-        cout << "\n\tMatrix A has null rows : " << matrix_a.HowManyNullRows();
     }
     catch(Matrix<MatrixType>::MatrixArithmeticException exp)
     {

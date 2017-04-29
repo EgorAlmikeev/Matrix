@@ -588,7 +588,7 @@ short Matrix<TypeOfMatrixElements>::GetRank()
     Matrix<TypeOfMatrixElements> temp;
     temp = StairStep();
 
-    return temp.HowManyNullRows();
+    return temp.rows - temp.HowManyNullRows();
 }
 
 template <class TypeOfMatrixElements>
