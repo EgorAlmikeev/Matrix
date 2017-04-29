@@ -124,7 +124,6 @@ public :
     bool operator == (const Matrix& comparable_matrix);
 
     short GetRank();
-    short GetMinimumRow();
     short HowManyNullRows();
 
     TypeOfMatrixElements GetCompliment(short row, short column);
@@ -199,6 +198,7 @@ private :
 
     TypeOfMatrixElements **elements;
 
+    short GetMinimumRow();
     short GetLongestElementSize();
 };
 
@@ -585,8 +585,9 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 template <class TypeOfMatrixElements>
 short Matrix<TypeOfMatrixElements>::GetRank()
 {
-    Matrix<TypeOfMatrixElements> temp;
-    temp = StairStep();
+    Matrix<TypeOfMatrixElements> temp("TEMP");
+    temp = *this;
+    temp.StairStep();
 
     return temp.rows - temp.HowManyNullRows();
 }
