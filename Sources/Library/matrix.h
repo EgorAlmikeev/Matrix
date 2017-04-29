@@ -124,8 +124,11 @@ public :
     bool HasNullColumns();
     bool operator == (const Matrix& comparable_matrix);
 
+    short GetMinRow();
+
     TypeOfMatrixElements GetCompliment(short row, short column);
     TypeOfMatrixElements GetDeterminant();
+    TypeOfMatrixElements GetRank();
     TypeOfMatrixElements& EditElement(short row, short column);
 
     Matrix GetMinor(short row, short column);
@@ -396,6 +399,12 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 }
 
 template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
+{
+
+}
+
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
 {
     --row_a;
@@ -538,6 +547,12 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 }
 
 template <class TypeOfMatrixElements>
+TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetRank()
+{
+
+}
+
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetReverse()
 {
     Matrix<TypeOfMatrixElements> reverse_matrix("REVERSE", rows, columns);
@@ -626,6 +641,23 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(short row, short
     }
 }
 
+template <class TypeOfMatrixElements>
+short Matrix<TypeOfMatrixElements>::GetMinRow()
+{
+    register int i, j;
+    short min_row = 0;
+
+    for(i = min_row + 1; i < rows; ++i)
+        for(j = 0; j < columns; ++j)
+        {
+            if(elements[i][j] > elements[min_row][j])
+                break;
+            else if(elements[i][j] < elements[min_row][j])
+                min_row = i;
+        }
+    return min_row + 1;
+}
+
 //functions/bool
 
 template <class TypeOfMatrixElements>
@@ -694,12 +726,6 @@ bool Matrix<TypeOfMatrixElements>::HasNullColumns()
     }
 }
 
-//functions/bool END
-
-//functios END
-
-//operators/logic
-
 template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElements>& comparable_matrix)
 {
@@ -727,7 +753,9 @@ bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElement
     }
 }
 
-//operators/logic END
+//functions/bool END
+
+//functios END
 
 //operators/arithmetic
 

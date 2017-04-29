@@ -12,15 +12,14 @@ int main()
     system("clear");
 
     Matrix<MatrixType> matrix_a("A", 3, 3);
-    Matrix<MatrixType> matrix_c("RESULT");
+    Matrix<MatrixType> matrix_c("Minor");
 
     try
     {
         matrix_a.SetElements();
         matrix_a.Show();
 
-        matrix_c = matrix_a.GetAdjoint();
-        matrix_c.Show();
+        cout << "\n\tMin row of matrix A = " << matrix_a.GetMinRow();
     }
     catch(Matrix<MatrixType>::MatrixArithmeticException exp)
     {
