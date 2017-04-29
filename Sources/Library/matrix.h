@@ -12,7 +12,6 @@ using namespace STD_NAMESPACE;
 template <class TypeOfMatrixElements>
 class Matrix
 {
-
 public :
 
     Matrix();
@@ -429,7 +428,9 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
         return *this;
     }
     else
+    {
         throw MatrixTypeException();
+    }
 }
 
 template <class TypeOfMatrixElements>
@@ -443,7 +444,11 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapRows(short row_a
         swap(elements[row_a], elements[row_b]);
         return *this;
     }
-    else throw MatrixAccessException(row_a + 1, row_b + 1, this, MatrixAccessException::row_row);
+    else
+    {
+        throw MatrixAccessException(row_a + 1, row_b + 1, this, MatrixAccessException::row_row);
+    }
+
 }
 
 template <class TypeOfMatrixElements>
@@ -462,7 +467,10 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapColumns(short co
                     swap(elements[i][j], elements[i][column_b]);
         return *this;
     }
-    else throw MatrixAccessException(column_a + 1, column_b + 1, this, MatrixAccessException::col_col);
+    else
+    {
+        throw MatrixAccessException(column_a + 1, column_b + 1, this, MatrixAccessException::col_col);
+    }
 }
 
 template <class TypeOfMatrixElements>
