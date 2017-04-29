@@ -124,11 +124,12 @@ public :
     bool HasNullColumns();
     bool operator == (const Matrix& comparable_matrix);
 
-    short GetMinRow();
+    short GetRank();
+    short GetMinimumRow();
+    short HowManyNullRows();
 
     TypeOfMatrixElements GetCompliment(short row, short column);
     TypeOfMatrixElements GetDeterminant();
-    TypeOfMatrixElements GetRank();
     TypeOfMatrixElements& EditElement(short row, short column);
 
     Matrix GetMinor(short row, short column);
@@ -148,6 +149,7 @@ public :
     Matrix& SwapColumns(short column_a, short column_b);
     Matrix& SetFill(TypeOfMatrixElements fill_element);
     Matrix& Resize(short new_rows, short new_columns);
+
     Matrix& operator = (const Matrix& equalable_matrix);
     Matrix& operator += (const Matrix& addable_matrix);
     Matrix& operator += (const TypeOfMatrixElements& addable_element);
@@ -403,20 +405,31 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
 {
     register int i, j, k, l;
 
-    SwapRows(1, GetMinRow());
+    if(
+            typeid(TypeOfMatrixElements) == typeid(float) ||
+            typeid(TypeOfMatrixElements) == typeid(double) ||
+            typeid(TypeOfMatrixElements) == typeid(long double)
+      )
+    {
 
-    for(i = 0, k = 0; i < rows - 1; ++i, ++k)
-        for(j = i + 1; j < rows; ++j)
-        {
-            if(elements[j][k] != 0)
+        SwapRows(1, GetMinimumRow());
+
+        for(i = 0, k = 0; i < rows - 1; ++i, ++k)
+            for(j = i + 1; j < rows; ++j)
             {
-                TypeOfMatrixElements coefficient = elements[j][k] / elements[i][k];
-                for(l = k; l < columns; ++l)
-                    elements[j][l] -= elements[i][l] * coefficient;
-            }
-        }
+                if(elements[j][k] != 0)
+                {
+                    TypeOfMatrixElements coefficient = elements[j][k] / elements[i][k];
 
-    return *this;
+                    for(l = k; l < columns; ++l)
+                        elements[j][l] -= elements[i][l] * coefficient;
+                }
+            }
+
+        return *this;
+    }
+    else
+        throw MatrixTypeException();
 }
 
 template <class TypeOfMatrixElements>
@@ -562,9 +575,12 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 }
 
 template <class TypeOfMatrixElements>
-TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetRank()
+short Matrix<TypeOfMatrixElements>::GetRank()
 {
+    Matrix<TypeOfMatrixElements> temp;
+    temp = StairStep();
 
+    return temp.HowManyNullRows();
 }
 
 template <class TypeOfMatrixElements>
@@ -657,7 +673,7 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(short row, short
 }
 
 template <class TypeOfMatrixElements>
-short Matrix<TypeOfMatrixElements>::GetMinRow()
+short Matrix<TypeOfMatrixElements>::GetMinimumRow()
 {
     register int i, j;
     short min_row = 0;
@@ -665,12 +681,32 @@ short Matrix<TypeOfMatrixElements>::GetMinRow()
     for(i = min_row + 1; i < rows; ++i)
         for(j = 0; j < columns; ++j)
         {
-            if(elements[i][j] > elements[min_row][j])
+            if(elements[min_row][j] == 0 && elements[i][j] != 0)
+                min_row = i;
+            else if(elements[i][j] > elements[min_row][j])
                 break;
-            else if(elements[i][j] < elements[min_row][j])
+            else if(elements[i][j] < elements[min_row][j] && elements[i][j] != 0)
                 min_row = i;
         }
     return min_row + 1;
+}
+
+template <class TypeOfMatrixElements>
+short Matrix<TypeOfMatrixElements>::HowManyNullRows()
+{
+    register int i, j;
+    bool is_null = true;
+    short null_rows = 0;
+
+    for(i = 0; i < rows; ++i, is_null = true)
+    {
+        for(j = 0; j < columns; ++j)
+            is_null *= (elements[i][j] == 0) ? true : false;
+        if(is_null)
+            ++null_rows;
+    }
+
+    return null_rows;
 }
 
 //functions/bool
