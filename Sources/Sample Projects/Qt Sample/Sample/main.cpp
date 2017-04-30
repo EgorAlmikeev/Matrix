@@ -8,7 +8,7 @@ int main()
 {
     system("clear");
 
-    typedef double MatrixType;
+    typedef int MatrixType;
     int rows, columns;
 
     cout << "\n\tSet matrix rows : ";
@@ -21,17 +21,15 @@ int main()
 
 
     Matrix<MatrixType> matrix_a("A", rows, columns);
+    Matrix<MatrixType> matrix_b("B", rows, columns);
 
 
     try
     {
         matrix_a.SetElements();
+        matrix_b.SetElements();
         matrix_a.Show();
-
-        cout << "\n\tMatrix A has rank : " << matrix_a.GetRank();
-
-        matrix_a.StairStep();
-        matrix_a.Show();
+        matrix_b.Show();
     }
     catch(Matrix<MatrixType>::MatrixArithmeticException exp)
     {
@@ -43,7 +41,7 @@ int main()
     }
     catch(Matrix<MatrixType>::MatrixTypeException exp)
     {
-        cout << "\n#error [Type]\n";
+        exp.errmsg();
     }
 
     cout << "\n\n\tEnd of program\n";

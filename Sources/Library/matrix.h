@@ -111,7 +111,40 @@ public :
 
     };
     class MatrixTypeException
-    {};
+    {
+    public :
+        string function_name;
+        string type_name;
+
+        MatrixTypeException(string _function_name, string _type_name) : function_name(_function_name)
+        {
+            if(_type_name == static_cast<string>(typeid(short).name()))
+                type_name = "short";
+            else if(_type_name == static_cast<string>(typeid(int).name()))
+                type_name = "int";
+            else if(_type_name == static_cast<string>(typeid(long).name()))
+                type_name = "long";
+            else if(_type_name == static_cast<string>(typeid(float).name()))
+                type_name = "float";
+            else if(_type_name == static_cast<string>(typeid(double).name()))
+                type_name = "double";
+            else if(_type_name == static_cast<string>(typeid(long double).name()))
+                type_name = "long double";
+            else if(_type_name == static_cast<string>(typeid(char).name()))
+                type_name = "char";
+            else if(_type_name == static_cast<string>(typeid(string).name()))
+                type_name = "string";
+            else
+                type_name = "unknown";
+        }
+
+        inline void errmsg()
+        {
+            STD_ERROR_STREAM << "\n#error [type] : TRYING TO CALL \"" << function_name << "\" FUNCTION "
+                             << "WITH TYPE \"" << type_name << "\"\n";
+            exit(1);
+        }
+    };
 
     void Show();
     void SetElements();
@@ -227,7 +260,7 @@ Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matri
 {
     register int i, j;
 
-    this->ResestIfNotEmpty();
+    ResestIfNotEmpty();
 
     try
     {
@@ -429,7 +462,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
     }
     else
     {
-        throw MatrixTypeException();
+        throw MatrixTypeException("StairStep()", typeid(TypeOfMatrixElements).name());
     }
 }
 
@@ -790,10 +823,15 @@ template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElements>& comparable_matrix)
 {
     if(
-            typeid(TypeOfMatrixElements) != typeid(float) ||
-            typeid(TypeOfMatrixElements) != typeid(double) ||
-            typeid(TypeOfMatrixElements) != typeid(long double)
+            typeid(TypeOfMatrixElements) == typeid(float) ||
+            typeid(TypeOfMatrixElements) == typeid(double) ||
+            typeid(TypeOfMatrixElements) == typeid(long double)
       )
+    {
+        throw MatrixTypeException("operator == ", typeid(TypeOfMatrixElements).name());
+    }
+    else
+    {
         if(rows == comparable_matrix.rows && columns == comparable_matrix.columns)
         {
             bool iscompare = true;
@@ -807,9 +845,6 @@ bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElement
         {
             return false;
         }
-    else
-    {
-        throw MatrixTypeException();
     }
 }
 
@@ -914,7 +949,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
 {
     register int i, j;
 
-    this->ResestIfNotEmpty();
+    ResestIfNotEmpty();
 
     try
     {
