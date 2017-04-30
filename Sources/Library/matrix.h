@@ -2,7 +2,6 @@
 #include <iomanip>
 #include "stream_defines.h"
 #include "functions_headers.h"
-#include "get_from_std_istream.h"
 
 using namespace STD_NAMESPACE;
 

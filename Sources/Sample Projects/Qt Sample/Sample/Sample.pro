@@ -8,6 +8,5 @@ SOURCES += main.cpp \
 
 HEADERS += \
     ../../../Library/functions_headers.h \
-    ../../../Library/get_from_std_istream.h \
     ../../../Library/matrix.h \
     ../../../Library/stream_defines.h
