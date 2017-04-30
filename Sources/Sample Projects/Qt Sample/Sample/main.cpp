@@ -6,27 +6,47 @@ using namespace std;
 
 int main()
 {
-
-    typedef int MatrixType;
-
     system("clear");
 
-    Matrix<MatrixType> matrix_a("A", 3, 3);
-    Matrix<MatrixType> matrix_c("RESULT");
+    typedef double MatrixType;
+    int rows, columns;
+
+    cout << "\n\tSet matrix rows : ";
+    cin >> rows;
+    cout << "\n\tSet matrix columns : ";
+    cin >> columns;
+
+    cin.clear();
+    cin.ignore(10, '\n');
+
+
+    Matrix<MatrixType> matrix_a("A", rows, columns);
+    Matrix<MatrixType> matrix_b("B", rows, columns);
+
 
     try
     {
         matrix_a.SetElements();
-        matrix_a.Show();
+        matrix_b.SetElements();
 
-        matrix_c = matrix_a.GetAdjoint();
-        matrix_c.Show();
+        matrix_a.Show();
+        matrix_b.Show();
+
+        matrix_a.StairStep();
+        matrix_b.StairStep();
+
+        matrix_a.Show();
+        matrix_b.Show();
     }
     catch(Matrix<MatrixType>::MatrixArithmeticException exp)
     {
         exp.errmsg();
     }
     catch(Matrix<MatrixType>::MatrixAccessException exp)
+    {
+        exp.errmsg();
+    }
+    catch(Matrix<MatrixType>::MatrixTypeException exp)
     {
         exp.errmsg();
     }

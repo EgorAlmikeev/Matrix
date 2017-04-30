@@ -11,7 +11,6 @@ using namespace STD_NAMESPACE;
 template <class TypeOfMatrixElements>
 class Matrix
 {
-
 public :
 
     Matrix();
@@ -34,7 +33,7 @@ public :
 
         MatrixArithmeticException(Matrix *first_culprit, Matrix *second_culprit, situation s, errorflag f) : culprit_1(first_culprit), culprit_2(second_culprit), sit(s), flag(f)
         {}
-        MatrixArithmeticException(Matrix *first_culprit, situation s, errorflag f) : culprit_1(first_culprit), culprit_2(nullptr), sit(s), flag(f)
+        MatrixArithmeticException(Matrix *culprit, situation s, errorflag f) : culprit_1(culprit), culprit_2(nullptr), sit(s), flag(f)
         {}
 
         inline void errmsg()
@@ -111,7 +110,40 @@ public :
 
     };
     class MatrixTypeException
-    {};
+    {
+    public :
+        string function_name;
+        string type_name;
+
+        MatrixTypeException(string _function_name, string _type_name) : function_name(_function_name)
+        {
+            if(_type_name == static_cast<string>(typeid(short).name()))
+                type_name = "short";
+            else if(_type_name == static_cast<string>(typeid(int).name()))
+                type_name = "int";
+            else if(_type_name == static_cast<string>(typeid(long).name()))
+                type_name = "long";
+            else if(_type_name == static_cast<string>(typeid(float).name()))
+                type_name = "float";
+            else if(_type_name == static_cast<string>(typeid(double).name()))
+                type_name = "double";
+            else if(_type_name == static_cast<string>(typeid(long double).name()))
+                type_name = "long double";
+            else if(_type_name == static_cast<string>(typeid(char).name()))
+                type_name = "char";
+            else if(_type_name == static_cast<string>(typeid(string).name()))
+                type_name = "string";
+            else
+                type_name = "unknown";
+        }
+
+        inline void errmsg()
+        {
+            STD_ERROR_STREAM << "\n#error [type] : TRYING TO CALL \"" << function_name << "\" FUNCTION "
+                             << "WITH TYPE \"" << type_name << "\"\n";
+            exit(1);
+        }
+    };
 
     void Show();
     void SetElements();
@@ -122,6 +154,9 @@ public :
     bool HasNullRows();
     bool HasNullColumns();
     bool operator == (const Matrix& comparable_matrix);
+
+    short GetRank();
+    short HowManyNullRows();
 
     TypeOfMatrixElements GetCompliment(short row, short column);
     TypeOfMatrixElements GetDeterminant();
@@ -144,6 +179,7 @@ public :
     Matrix& SwapColumns(short column_a, short column_b);
     Matrix& SetFill(TypeOfMatrixElements fill_element);
     Matrix& Resize(short new_rows, short new_columns);
+
     Matrix& operator = (const Matrix& equalable_matrix);
     Matrix& operator += (const Matrix& addable_matrix);
     Matrix& operator += (const TypeOfMatrixElements& addable_element);
@@ -194,6 +230,7 @@ private :
 
     TypeOfMatrixElements **elements;
 
+    short GetMinimumRow();
     short GetLongestElementSize();
 };
 
@@ -222,7 +259,7 @@ Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matri
 {
     register int i, j;
 
-    this->ResestIfNotEmpty();
+    ResestIfNotEmpty();
 
     try
     {
@@ -358,29 +395,32 @@ void Matrix<TypeOfMatrixElements>::Show()
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::SetElements()
 {
-    STD_OUT_STREAM << "\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] elements setup : ";
+    register int i, j;
 
-    register int i = 0, j = 0;
+    STD_OUT_STREAM << "\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] elements setup : \n";
 
-    while(i < rows)
-    {
-        STD_OUT_STREAM << endl;
-        while(j < columns)
+    for(i = 0; i < rows; ++i, printf("\n"))
+        for(j = 0; j < columns; ++j)
         {
-            try
+            for(;;)
             {
-                STD_OUT_STREAM << "\t" << name << "[" << i + 1 << "][" << j + 1 << "] : ";
-                elements[i][j] = GetFormStdIstream<TypeOfMatrixElements>::get();
-                ++j;
-            }
-            catch(GetFormStdIstream<int>::GetFromStdIstreamException)
-            {
-                STD_ERROR_STREAM << "\n#error : Incorrect input\n";
+                STD_OUT_STREAM << "\t\"" << name << "\"[" << i + 1 << "][" << j + 1 << "] : ";
+                STD_INPUT_STREAM.unsetf(ios::skipws);
+                STD_INPUT_STREAM >> elements[i][j];
+                if(STD_INPUT_STREAM.good())
+                {
+                    STD_INPUT_STREAM.ignore(10, '\n');
+                    STD_INPUT_STREAM.setf(ios::skipws);
+                    break;
+                }
+                else
+                {
+                    STD_INPUT_STREAM.clear();
+                    STD_INPUT_STREAM.ignore(10, '\n');
+                    STD_OUT_STREAM << "\n#error [input] : INCORRECT TYPE OF INPUT VALUE OR NOTHING TO INPUT\n";
+                }
             }
         }
-        ++i;
-        j = 0;
-    }
 }
 
 template <class TypeOfMatrixElements>
@@ -395,6 +435,40 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 }
 
 template <class TypeOfMatrixElements>
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
+{
+    register int i, j, k, l;
+
+    if(
+            typeid(TypeOfMatrixElements) == typeid(float) ||
+            typeid(TypeOfMatrixElements) == typeid(double) ||
+            typeid(TypeOfMatrixElements) == typeid(long double)
+      )
+    {
+
+        SwapRows(1, GetMinimumRow());
+
+        for(i = 0, k = 0; i < rows - 1; ++i, ++k)
+            for(j = i + 1; j < rows; ++j)
+            {
+                if(elements[j][k] != 0)
+                {
+                    TypeOfMatrixElements coefficient = elements[j][k] / elements[i][k];
+
+                    for(l = k; l < columns; ++l)
+                        elements[j][l] -= elements[i][l] * coefficient;
+                }
+            }
+
+        return *this;
+    }
+    else
+    {
+        throw MatrixTypeException("StairStep()", typeid(TypeOfMatrixElements).name());
+    }
+}
+
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
 {
     --row_a;
@@ -405,7 +479,11 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapRows(short row_a
         swap(elements[row_a], elements[row_b]);
         return *this;
     }
-    else throw MatrixAccessException(row_a + 1, row_b + 1, this, MatrixAccessException::row_row);
+    else
+    {
+        throw MatrixAccessException(row_a + 1, row_b + 1, this, MatrixAccessException::row_row);
+    }
+
 }
 
 template <class TypeOfMatrixElements>
@@ -424,7 +502,10 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapColumns(short co
                     swap(elements[i][j], elements[i][column_b]);
         return *this;
     }
-    else throw MatrixAccessException(column_a + 1, column_b + 1, this, MatrixAccessException::col_col);
+    else
+    {
+        throw MatrixAccessException(column_a + 1, column_b + 1, this, MatrixAccessException::col_col);
+    }
 }
 
 template <class TypeOfMatrixElements>
@@ -537,6 +618,16 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 }
 
 template <class TypeOfMatrixElements>
+short Matrix<TypeOfMatrixElements>::GetRank()
+{
+    Matrix<TypeOfMatrixElements> temp("TEMP");
+    temp = *this;
+    temp.StairStep();
+
+    return temp.rows - temp.HowManyNullRows();
+}
+
+template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetReverse()
 {
     Matrix<TypeOfMatrixElements> reverse_matrix("REVERSE", rows, columns);
@@ -625,6 +716,43 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(short row, short
     }
 }
 
+template <class TypeOfMatrixElements>
+short Matrix<TypeOfMatrixElements>::GetMinimumRow()
+{
+    register int i, j;
+    short min_row = 0;
+
+    for(i = min_row + 1; i < rows; ++i)
+        for(j = 0; j < columns; ++j)
+        {
+            if(elements[min_row][j] == 0 && elements[i][j] != 0)
+                min_row = i;
+            else if(elements[i][j] > elements[min_row][j])
+                break;
+            else if(elements[i][j] < elements[min_row][j] && elements[i][j] != 0)
+                min_row = i;
+        }
+    return min_row + 1;
+}
+
+template <class TypeOfMatrixElements>
+short Matrix<TypeOfMatrixElements>::HowManyNullRows()
+{
+    register int i, j;
+    bool is_null = true;
+    short null_rows = 0;
+
+    for(i = 0; i < rows; ++i, is_null = true)
+    {
+        for(j = 0; j < columns; ++j)
+            is_null *= (elements[i][j] == 0) ? true : false;
+        if(is_null)
+            ++null_rows;
+    }
+
+    return null_rows;
+}
+
 //functions/bool
 
 template <class TypeOfMatrixElements>
@@ -693,20 +821,19 @@ bool Matrix<TypeOfMatrixElements>::HasNullColumns()
     }
 }
 
-//functions/bool END
-
-//functios END
-
-//operators/logic
-
 template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElements>& comparable_matrix)
 {
     if(
-            typeid(TypeOfMatrixElements) != typeid(float) ||
-            typeid(TypeOfMatrixElements) != typeid(double) ||
-            typeid(TypeOfMatrixElements) != typeid(long double)
+            typeid(TypeOfMatrixElements) == typeid(float) ||
+            typeid(TypeOfMatrixElements) == typeid(double) ||
+            typeid(TypeOfMatrixElements) == typeid(long double)
       )
+    {
+        throw MatrixTypeException("operator == ", typeid(TypeOfMatrixElements).name());
+    }
+    else
+    {
         if(rows == comparable_matrix.rows && columns == comparable_matrix.columns)
         {
             bool iscompare = true;
@@ -720,13 +847,12 @@ bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElement
         {
             return false;
         }
-    else
-    {
-        throw MatrixTypeException();
     }
 }
 
-//operators/logic END
+//functions/bool END
+
+//functios END
 
 //operators/arithmetic
 
@@ -825,7 +951,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
 {
     register int i, j;
 
-    this->ResestIfNotEmpty();
+    ResestIfNotEmpty();
 
     try
     {
