@@ -8,7 +8,7 @@ int main()
 {
     system("clear");
 
-    typedef int MatrixType;
+    typedef double MatrixType;
     int rows, columns;
 
     cout << "\n\tSet matrix rows : ";
@@ -28,6 +28,13 @@ int main()
     {
         matrix_a.SetElements();
         matrix_b.SetElements();
+
+        matrix_a.Show();
+        matrix_b.Show();
+
+        matrix_a.StairStep();
+        matrix_b.StairStep();
+
         matrix_a.Show();
         matrix_b.Show();
     }

@@ -2,7 +2,6 @@
 #include <iomanip>
 #include "stream_defines.h"
 #include "functions_headers.h"
-#include "get_from_std_istream.h"
 
 using namespace STD_NAMESPACE;
 
@@ -34,7 +33,7 @@ public :
 
         MatrixArithmeticException(Matrix *first_culprit, Matrix *second_culprit, situation s, errorflag f) : culprit_1(first_culprit), culprit_2(second_culprit), sit(s), flag(f)
         {}
-        MatrixArithmeticException(Matrix *first_culprit, situation s, errorflag f) : culprit_1(first_culprit), culprit_2(nullptr), sit(s), flag(f)
+        MatrixArithmeticException(Matrix *culprit, situation s, errorflag f) : culprit_1(culprit), culprit_2(nullptr), sit(s), flag(f)
         {}
 
         inline void errmsg()
@@ -396,29 +395,32 @@ void Matrix<TypeOfMatrixElements>::Show()
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::SetElements()
 {
-    STD_OUT_STREAM << "\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] elements setup : ";
+    register int i, j;
 
-    register int i = 0, j = 0;
+    STD_OUT_STREAM << "\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] elements setup : \n";
 
-    while(i < rows)
-    {
-        STD_OUT_STREAM << endl;
-        while(j < columns)
+    for(i = 0; i < rows; ++i, printf("\n"))
+        for(j = 0; j < columns; ++j)
         {
-            try
+            for(;;)
             {
-                STD_OUT_STREAM << "\t" << name << "[" << i + 1 << "][" << j + 1 << "] : ";
-                elements[i][j] = GetFormStdIstream<TypeOfMatrixElements>::get();
-                ++j;
-            }
-            catch(GetFormStdIstream<int>::GetFromStdIstreamException)
-            {
-                STD_ERROR_STREAM << "\n#error : Incorrect input\n";
+                STD_OUT_STREAM << "\t\"" << name << "\"[" << i + 1 << "][" << j + 1 << "] : ";
+                STD_INPUT_STREAM.unsetf(ios::skipws);
+                STD_INPUT_STREAM >> elements[i][j];
+                if(STD_INPUT_STREAM.good())
+                {
+                    STD_INPUT_STREAM.ignore(10, '\n');
+                    STD_INPUT_STREAM.setf(ios::skipws);
+                    break;
+                }
+                else
+                {
+                    STD_INPUT_STREAM.clear();
+                    STD_INPUT_STREAM.ignore(10, '\n');
+                    STD_OUT_STREAM << "\n#error [input] : INCORRECT TYPE OF INPUT VALUE OR NOTHING TO INPUT\n";
+                }
             }
         }
-        ++i;
-        j = 0;
-    }
 }
 
 template <class TypeOfMatrixElements>
