@@ -630,9 +630,20 @@ short Matrix<TypeOfMatrixElements>::GetRank()
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetReverse()
 {
-    Matrix<TypeOfMatrixElements> reverse_matrix("REVERSE", rows, columns);
-    reverse_matrix = GetAdjoint() / GetDeterminant();
-    return reverse_matrix;
+    if(
+            typeid(TypeOfMatrixElements) == typeid(float) ||
+            typeid(TypeOfMatrixElements) == typeid(double) ||
+            typeid(TypeOfMatrixElements) == typeid(long double)
+      )
+    {
+        Matrix<TypeOfMatrixElements> reverse_matrix("REVERSE", rows, columns);
+        reverse_matrix = GetAdjoint() / GetDeterminant();
+        return reverse_matrix;
+    }
+    else
+    {
+        throw MatrixTypeException("GetReverse()", typeid(TypeOfMatrixElements).name());
+    }
 }
 
 template <class TypeOfMatrixElements>
