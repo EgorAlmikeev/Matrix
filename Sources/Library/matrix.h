@@ -398,6 +398,7 @@ void Matrix<TypeOfMatrixElements>::SetElements()
     register int i, j;
 
     STD_OUT_STREAM << "\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] elements setup : \n";
+    STD_INPUT_STREAM.unsetf(ios::skipws);
 
     for(i = 0; i < rows; ++i, printf("\n"))
         for(j = 0; j < columns; ++j)
@@ -405,12 +406,10 @@ void Matrix<TypeOfMatrixElements>::SetElements()
             for(;;)
             {
                 STD_OUT_STREAM << "\t\"" << name << "\"[" << i + 1 << "][" << j + 1 << "] : ";
-                STD_INPUT_STREAM.unsetf(ios::skipws);
                 STD_INPUT_STREAM >> elements[i][j];
                 if(STD_INPUT_STREAM.good())
                 {
                     STD_INPUT_STREAM.ignore(10, '\n');
-                    STD_INPUT_STREAM.setf(ios::skipws);
                     break;
                 }
                 else
@@ -421,6 +420,7 @@ void Matrix<TypeOfMatrixElements>::SetElements()
                 }
             }
         }
+    STD_INPUT_STREAM.setf(ios::skipws);
 }
 
 template <class TypeOfMatrixElements>
