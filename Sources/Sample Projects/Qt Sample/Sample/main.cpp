@@ -8,35 +8,25 @@ int main()
 {
     system("clear");
 
-    typedef double MatrixType;
-    int rows, columns;
+    typedef int MatrixType;
 
-    cout << "\n\tSet matrix rows : ";
-    cin >> rows;
-    cout << "\n\tSet matrix columns : ";
-    cin >> columns;
-
-    cin.clear();
-    cin.ignore(10, '\n');
-
-
-    Matrix<MatrixType> matrix_a("A", rows, columns);
-    Matrix<MatrixType> matrix_b("B", rows, columns);
+    Matrix<MatrixType> matrix_a("A", 3, 3);
+    Matrix<MatrixType> matrix_b("B", 3, 3);
+    Matrix<MatrixType> result("RESULT", 3, 3);
 
 
     try
     {
+
         matrix_a.SetElements();
         matrix_b.SetElements();
 
         matrix_a.Show();
         matrix_b.Show();
 
-        matrix_a.StairStep();
-        matrix_b.StairStep();
+        result = matrix_a.Multiplicate(matrix_b);
+        result.Show();
 
-        matrix_a.Show();
-        matrix_b.Show();
     }
     catch(Matrix<MatrixType>::MatrixArithmeticException exp)
     {
