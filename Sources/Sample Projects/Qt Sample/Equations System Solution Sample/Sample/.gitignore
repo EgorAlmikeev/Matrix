@@ -71,5 +71,8 @@ Thumbs.db
 *.dll
 *.exe
 
-#own change
+#own changes
 *.user
+*.o
+Makefile
+*.exec
