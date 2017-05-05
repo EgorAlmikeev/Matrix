@@ -583,7 +583,7 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetCompliment(short row, shor
 template <class TypeOfMatrixElements>
 TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 {
-    if(rows != columns)
+        if(rows != columns)
             throw MatrixArithmeticException(this, MatrixArithmeticException::culprit_x1, MatrixArithmeticException::determinant);
 
         if(rows >= 4 && columns >= 4)
@@ -614,7 +614,6 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
             return elements[0][0] * elements[1][1] - elements[0][1] * elements[1][0];
         else
             return elements[0][0];
-
 }
 
 template <class TypeOfMatrixElements>
@@ -688,7 +687,6 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short exclud
 
     --excluded_row;
     --excluded_column;
-
 
     if(excluded_row < rows && excluded_column < columns && excluded_row >= 0 && excluded_column >= 0 && rows == columns)
     {
