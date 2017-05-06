@@ -448,16 +448,20 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
         SwapRows(1, GetMinimumRow());
 
         for(i = 0, k = 0; i < rows - 1; ++i, ++k)
+        {
+            TypeOfMatrixElements coefficien_1 = elements[i][k];
+
             for(j = i + 1; j < rows; ++j)
             {
-                if(elements[j][k] != 0)
-                {
-                    TypeOfMatrixElements coefficient = elements[j][k] / elements[i][k];
+                TypeOfMatrixElements coefficien_2 = elements[j][k];
 
-                    for(l = k; l < columns; ++l)
-                        elements[j][l] -= elements[i][l] * coefficient;
+                for(l = k; l < columns; ++l)
+                {
+                    elements[j][l] *= coefficien_1;
+                    elements[j][l] -= elements[i][l] * coefficien_2;
                 }
             }
+        }
 
         return *this;
     }
