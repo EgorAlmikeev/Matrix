@@ -449,6 +449,13 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
 
         for(i = 0, k = 0; i < rows - 1; ++i, ++k)
         {
+            for(j = 0; j < columns; ++j)
+                if(elements[i][j] != 0)
+                {
+                    k = j;
+                    break;
+                }
+
             TypeOfMatrixElements coefficien_1 = elements[i][k];
 
             for(j = i + 1; j < rows; ++j)
@@ -754,8 +761,10 @@ short Matrix<TypeOfMatrixElements>::HowManyNullRows()
     bool is_null = true;
     short null_rows = 0;
 
-    for(i = 0; i < rows; ++i, is_null = true)
+    for(i = 0; i < rows; ++i)
     {
+        is_null = true;
+
         for(j = 0; j < columns; ++j)
             is_null *= (elements[i][j] == 0) ? true : false;
         if(is_null)
