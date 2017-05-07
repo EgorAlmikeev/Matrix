@@ -90,16 +90,17 @@ int main()
     vector<Type>::iterator iter;
     int counter;
 
-    cout << endl << "+" << setw(28) << setfill('-') << "-" << "+" << setfill(' ');
+    cout << endl << "+" << setw(43) << setfill('-') << "-" << "+" << setfill(' ');
 
     for(iter = solutions.begin(), counter = 1; iter != solutions.end(); ++iter, ++counter)
     {
         cout << endl << setiosflags(ios::right) << "| x" << counter << " = "
-             << setw(5) << *iter << " / " << setw(5) << determinant << " = " << setw(5)
+             << setw(10) << *iter << " / " << setw(10) << setiosflags(ios::left)
+             << determinant << " = " << setw(10)
              << *iter / determinant << " |";
     }
 
-    cout << endl << "+" << setw(28) << setfill('-') << "-" << "+" << setfill(' ');
+    cout << endl << "+" << setw(43) << setfill('-') << "-" << "+" << setfill(' ');
 
     cout << "\n\n\tEND OF PROGRAM...\n";
 
