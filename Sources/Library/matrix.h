@@ -447,43 +447,33 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
 {
     register int i, j, k, l;
 
-    if(
-            typeid(TypeOfMatrixElements) == typeid(float) ||
-            typeid(TypeOfMatrixElements) == typeid(double) ||
-            typeid(TypeOfMatrixElements) == typeid(long double)
-      )
+
+    SwapRows(1, GetMinimumRow());
+
+    for(i = 0, k = 0; i < rows - 1; ++i, ++k)
     {
-        SwapRows(1, GetMinimumRow());
-
-        for(i = 0, k = 0; i < rows - 1; ++i, ++k)
-        {
-            for(j = 0; j < columns; ++j)
-                if(elements[i][j] != 0)
-                {
-                    k = j;
-                    break;
-                }
-
-            TypeOfMatrixElements coefficien_1 = elements[i][k];
-
-            for(j = i + 1; j < rows; ++j)
+        for(j = 0; j < columns; ++j)
+            if(elements[i][j] != 0)
             {
-                TypeOfMatrixElements coefficien_2 = elements[j][k];
+                k = j;
+                break;
+            }
 
-                for(l = k; l < columns; ++l)
-                {
-                    elements[j][l] *= coefficien_1;
-                    elements[j][l] -= elements[i][l] * coefficien_2;
-                }
+        TypeOfMatrixElements coefficien_1 = elements[i][k];
+
+        for(j = i + 1; j < rows; ++j)
+        {
+            TypeOfMatrixElements coefficien_2 = elements[j][k];
+
+            for(l = k; l < columns; ++l)
+            {
+                elements[j][l] *= coefficien_1;
+                elements[j][l] -= elements[i][l] * coefficien_2;
             }
         }
+    }
 
-        return *this;
-    }
-    else
-    {
-        throw MatrixTypeException("StairStep()", typeid(TypeOfMatrixElements).name());
-    }
+    return *this;
 }
 
 template <class TypeOfMatrixElements>
