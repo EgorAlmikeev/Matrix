@@ -373,6 +373,7 @@ template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::Show()
 {
     STD_OUT_STREAM << "\n\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] : ";
+    STD_OUT_STREAM << setiosflags(ios::right);
 
     if(
             typeid(TypeOfMatrixElements) == typeid(long double) ||
@@ -387,8 +388,10 @@ void Matrix<TypeOfMatrixElements>::Show()
     for(i = 0; i < rows; ++i)
     {
         STD_OUT_STREAM << endl;
+        STD_OUT_STREAM << " |";
         for(j = 0; j < columns; ++j)
             STD_OUT_STREAM << setw(printable_size) << elements[i][j];
+        STD_OUT_STREAM << setw(2) << setiosflags(ios::right) << " | ";
     }
 }
 
@@ -399,13 +402,15 @@ void Matrix<TypeOfMatrixElements>::SetElements()
 
     STD_OUT_STREAM << "\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] elements setup : \n";
     STD_INPUT_STREAM.unsetf(ios::skipws);
+    STD_OUT_STREAM << endl << "+" << setw(35) << setfill('-') << "+" << setfill(' ') << endl;
 
-    for(i = 0; i < rows; ++i, printf("\n"))
+    for(i = 0; i < rows; ++i)
+    {
         for(j = 0; j < columns; ++j)
         {
             for(;;)
             {
-                STD_OUT_STREAM << "\t\"" << name << "\"[" << i + 1 << "][" << j + 1 << "] : ";
+                STD_OUT_STREAM << "| " << setw(10) << name << "[" << i + 1 << "][" << j + 1 << "] : ";
                 STD_INPUT_STREAM >> elements[i][j];
                 if(STD_INPUT_STREAM.good())
                 {
@@ -416,10 +421,13 @@ void Matrix<TypeOfMatrixElements>::SetElements()
                 {
                     STD_INPUT_STREAM.clear();
                     STD_INPUT_STREAM.ignore(10, '\n');
-                    STD_OUT_STREAM << "\n#error [input] : INCORRECT TYPE OF INPUT VALUE OR NOTHING TO INPUT\n";
+                    STD_OUT_STREAM << "| #error [input] : INCORRECT INPUT" << endl;
                 }
             }
         }
+        STD_OUT_STREAM << "+" << setw(35) << setfill('-') << setiosflags(ios::right) << "+" << setfill(' ') << endl;
+    }
+
     STD_INPUT_STREAM.setf(ios::skipws);
 }
 
