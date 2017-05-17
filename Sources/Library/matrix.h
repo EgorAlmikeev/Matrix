@@ -573,7 +573,7 @@ void Matrix<TypeOfMatrixElements>::ResestIfNotEmpty()
 {
     if(rows != 0 && columns != 0 && elements != nullptr)
     {
-        register int i, j;
+        register int i;
         for(i = 0; i < rows; ++i)
             delete [] elements[i];
         delete [] elements;
