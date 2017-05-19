@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <typeinfo>
 #include "stream_defines.h"
 #include "functions_headers.h"
 
