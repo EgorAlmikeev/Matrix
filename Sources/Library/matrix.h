@@ -61,7 +61,7 @@ public :
             default : what_happened = " NON CONCRETIZE ERROR "; break;
             }
 
-            STD_ERROR_STREAM << "\n#error [arithmetic] : " << what_happened << "\"" << culprit_1->name << "\""
+            STD_ERROR_STREAM << "\n#matrix error [arithmetic] : " << what_happened << "\"" << culprit_1->name << "\""
                              << "[" << culprit_1->rows << "][" << culprit_1->columns << "] and "
                              << "\"" << culprit_2->name << "\""
                              << "[" << culprit_2->rows << "][" << culprit_2->columns << "]\n";
@@ -78,7 +78,7 @@ public :
             default : what_happened = " NON CONCRETIZE ERROR "; break;
             }
 
-            STD_ERROR_STREAM << "\n#error [arithmetic] : " << what_happened << "\"" << culprit_1->name << "\""
+            STD_ERROR_STREAM << "\n#matrix error [arithmetic] : " << what_happened << "\"" << culprit_1->name << "\""
                              << "[" << culprit_1->rows << "][" << culprit_1->columns << "]\n";
             exit(1);
         }
@@ -100,9 +100,9 @@ public :
         {
             switch(sit)
             {
-            case row_col : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" ROW : " << place_1 << " COLUMN : " << place_2 << endl; break;
-            case row_row : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" ROW : " << place_1 << " ROW : " << place_2 << endl; break;
-            case col_col : STD_ERROR_STREAM << "\n#error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" COLUMN : " << place_1 << " COLUMN : " << place_2 << endl; break;
+            case row_col : STD_ERROR_STREAM << "\n#matrix error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" ROW : " << place_1 << " COLUMN : " << place_2 << endl; break;
+            case row_row : STD_ERROR_STREAM << "\n#matrix error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" ROW : " << place_1 << " ROW : " << place_2 << endl; break;
+            case col_col : STD_ERROR_STREAM << "\n#matrix error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" COLUMN : " << place_1 << " COLUMN : " << place_2 << endl; break;
             }
 
             exit(1);
@@ -139,7 +139,7 @@ public :
 
         inline void errmsg()
         {
-            STD_ERROR_STREAM << "\n#error [type] : TRYING TO CALL \"" << function_name << "\" FUNCTION "
+            STD_ERROR_STREAM << "\n#matrix error [type] : TRYING TO CALL \"" << function_name << "\" FUNCTION "
                              << "WITH TYPE \"" << type_name << "\"\n";
             exit(1);
         }
