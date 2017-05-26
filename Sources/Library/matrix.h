@@ -232,6 +232,7 @@ private :
     TypeOfMatrixElements **elements;
 
     short GetMinimumRow();
+    short GetMaximumRow();
     short GetLongestElementSize();
 };
 
@@ -448,30 +449,17 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
 {
     register int i, j, k, l;
 
+    if(elements[0][0] == 0)
+        SwapRows(1, GetMaximumRow());
 
-    SwapRows(1, GetMinimumRow());
+    k = 0;
 
-    for(i = 0, k = 0; i < rows - 1; ++i, ++k)
+    while(k < rows)
     {
-        for(j = 0; j < columns; ++j)
-            if(elements[i][j] != 0)
-            {
-                k = j;
-                break;
-            }
-
-        TypeOfMatrixElements coefficien_1 = elements[i][k];
-
-        for(j = i + 1; j < rows; ++j)
-        {
-            TypeOfMatrixElements coefficien_2 = elements[j][k];
-
-            for(l = k; l < columns; ++l)
-            {
-                elements[j][l] *= coefficien_1;
-                elements[j][l] -= elements[i][l] * coefficien_2;
-            }
-        }
+        for(i = 0; i < rows; ++i)
+            for(j = k; j < columns; ++j)
+                elements[i][j] = elements[i][j] * elements[k][k] - elements[k][j] * elements[i][k];
+        ++k;
     }
 
     return *this;
@@ -751,6 +739,22 @@ short Matrix<TypeOfMatrixElements>::GetMinimumRow()
         }
 
     return min_row + 1;
+}
+
+template <class TypeOfMatrixElements>
+short Matrix<TypeOfMatrixElements>::GetMaximumRow()
+{
+    register int i, j;
+    short max_row = 0;
+
+    for(j = 0; j < columns; ++j)
+        for(i = 0; i < rows; ++i)
+            if(elements[max_row][j] < elements[i][j])
+            {
+                max_row = i;
+                return max_row + 1;
+            }
+    return max_row + 1;
 }
 
 template <class TypeOfMatrixElements>
