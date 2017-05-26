@@ -3,6 +3,7 @@
 #include <typeinfo>
 #include "stream_defines.h"
 #include "functions_headers.h"
+#include <math.h>
 
 using namespace STD_NAMESPACE;
 
@@ -456,9 +457,16 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
 
     while(k < rows)
     {
-        for(i = 0; i < rows; ++i)
+        TypeOfMatrixElements coefficient_1 = elements[k][k];
+        for(i = k + 1; i < rows; ++i)
+        {
+            TypeOfMatrixElements coefficient_2 = elements[i][k];
             for(j = k; j < columns; ++j)
-                elements[i][j] = elements[i][j] * elements[k][k] - elements[k][j] * elements[i][k];
+            {
+                elements[i][j] *= coefficient_1;
+                elements[i][j] -= elements[k][j] * coefficient_2;
+            }
+        }
         ++k;
     }
 

@@ -6,6 +6,5 @@
 
 void swap(void** a, void** b);
 void swap(void* a, void* b);
-int pow(int a, int b);
 
 #endif // FUNCTIONS_HEADERS_H

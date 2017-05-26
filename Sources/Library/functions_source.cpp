@@ -15,8 +15,3 @@ void swap(void* a, void* b)
     a = b;
     b = temp;
 }
-
-int pow(int a, int b)
-{
-    return (b == 0) ? 1 : (b == 1) ? a : a * pow(a, b - 1);
-}
