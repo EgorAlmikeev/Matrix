@@ -6,6 +6,8 @@ using namespace std;
 
 int main()
 {
+    typedef double Type;
+
     try
     {
         cout << "\n\tGauss method program\n";
@@ -17,12 +19,12 @@ int main()
         cin.clear();
         cin.ignore(10, '\n');
 
-        Matrix<double> original_matrix("Matrix", size_of_matrix, size_of_matrix + 1);
+        Matrix<Type> original_matrix("Matrix", size_of_matrix, size_of_matrix + 1);
         original_matrix.SetElements();
 
         unsigned int start_time =  clock();
 
-        Matrix<double> cuted_matrix("CUTED");
+        Matrix<Type> cuted_matrix("CUTED");
         cuted_matrix = original_matrix;
 
         cuted_matrix.Resize(size_of_matrix, size_of_matrix);
@@ -47,8 +49,8 @@ int main()
             return 0;
         }
 
-        double right_part[size_of_matrix];
-        double unknown_elements[size_of_matrix];
+        Type right_part[size_of_matrix];
+        Type unknown_elements[size_of_matrix];
 
         for(int i = 0; i < size_of_matrix; ++i)
             unknown_elements[i] = 1;
@@ -61,8 +63,8 @@ int main()
 
         for(int i = size_of_matrix - 2; i >= 0; --i)
         {
-            double sum = 0;
-            double coefficient = original_matrix.EditElement(i + 1, i + 1);
+            Type sum = 0;
+            Type coefficient = original_matrix.EditElement(i + 1, i + 1);
 
             for(int j = i + 1; j < size_of_matrix; ++j)
                 sum += original_matrix.EditElement(i + 1, j + 1) * unknown_elements[j];
@@ -77,15 +79,15 @@ int main()
         unsigned int end_time = clock();
         cout << "\n\n\ttimer : " << start_time - end_time << " milliseconds";
     }
-    catch(Matrix<double>::MatrixAccessException exp)
+    catch(Matrix<Type>::MatrixAccessException exp)
     {
         exp.errmsg();
     }
-    catch(Matrix<double>::MatrixArithmeticException exp)
+    catch(Matrix<Type>::MatrixArithmeticException exp)
     {
         exp.errmsg();
     }
-    catch(Matrix<double>::MatrixTypeException exp)
+    catch(Matrix<Type>::MatrixTypeException exp)
     {
         exp.errmsg();
     }
