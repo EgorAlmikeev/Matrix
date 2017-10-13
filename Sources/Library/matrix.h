@@ -260,7 +260,7 @@ Matrix<TypeOfMatrixElements>::Matrix(string _name)
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matrix)
 {
-    register int i, j;
+      int i, j;
 
     ResestIfNotEmpty();
 
@@ -287,7 +287,7 @@ Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matri
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>::Matrix(string _name, int _rows, int _columns) : name(_name), rows(_rows), columns(_columns)
 {
-    register int i, j;
+      int i, j;
 
     try
     {
@@ -309,7 +309,7 @@ Matrix<TypeOfMatrixElements>::Matrix(string _name, int _rows, int _columns) : na
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>::~Matrix()
 {
-    register int i;
+      int i;
 
     for(i = 0; i < rows; ++i)
         delete [] elements[i];
@@ -328,7 +328,7 @@ short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
     bool sign = false;
     bool integer = true;
 
-    register int i, j;
+      int i, j;
 
     if(
             typeid(TypeOfMatrixElements) == typeid(long double) ||
@@ -385,7 +385,7 @@ void Matrix<TypeOfMatrixElements>::Show()
       )
         STD_OUT_STREAM << setiosflags(ios::fixed) << setprecision(1);
 
-    register int i, j;
+      int i, j;
     short printable_size = this->GetLongestElementSize();
 
     for(i = 0; i < rows; ++i)
@@ -401,7 +401,7 @@ void Matrix<TypeOfMatrixElements>::Show()
 template <class TypeOfMatrixElements>
 void Matrix<TypeOfMatrixElements>::SetElements()
 {
-    register int i, j;
+      int i, j;
 
     STD_OUT_STREAM << "\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] elements setup : \n";
     STD_INPUT_STREAM.unsetf(ios::skipws);
@@ -437,7 +437,7 @@ void Matrix<TypeOfMatrixElements>::SetElements()
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 {
-    register int i, j;
+      int i, j;
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
             swap(elements[i][j], elements[j][i]);
@@ -448,7 +448,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
 {
-    register int i, j, k, l;
+      int i, j, k;
 
     if(elements[0][0] == 0)
         SwapRows(1, GetMaximumRow());
@@ -494,7 +494,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapRows(short row_a
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
 {
-    register int i, j;
+      int i, j;
 
     --column_a;
     --column_b;
@@ -516,7 +516,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapColumns(short co
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SetFill(TypeOfMatrixElements fill_element)
 {
-    register int i, j;
+      int i, j;
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
             elements[i][j] = fill_element;
@@ -527,7 +527,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Resize(short new_rows, short new_columns)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", new_rows, new_columns);
-    register int i, j;
+      int i, j;
 
     if(new_rows > 0 && new_columns > 0)
     {
@@ -570,7 +570,7 @@ void Matrix<TypeOfMatrixElements>::ResestIfNotEmpty()
 {
     if(rows != 0 && columns != 0 && elements != nullptr)
     {
-        register int i;
+          int i;
         for(i = 0; i < rows; ++i)
             delete [] elements[i];
         delete [] elements;
@@ -655,7 +655,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::Multiplicate(Matrix<T
     if(columns == multiplier_matrix.rows)
     {
         Matrix<TypeOfMatrixElements> temp("TEMP", rows, multiplier_matrix.columns);
-        register int i, j, k;
+          int i, j, k;
         for(i = 0; i < rows; ++i)
             for(j = 0; j < multiplier_matrix.columns; ++j)
             {
@@ -676,7 +676,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetAdjoint()
 {
     Matrix<TypeOfMatrixElements> adjoint_matrix("ADJOINT", rows, columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
             adjoint_matrix.EditElement(i + 1, j + 1) = GetCompliment(j + 1, i + 1);
@@ -687,7 +687,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short excluded_row, short excluded_column)
 {
     Matrix<TypeOfMatrixElements> minor_matrix("MINOR", rows - 1, columns - 1);
-    register int i = 0, j = 0, minor_row = 0, minor_column = 0;
+      int i = 0, j = 0, minor_row = 0, minor_column = 0;
 
     --excluded_row;
     --excluded_column;
@@ -732,7 +732,7 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(short row, short
 template <class TypeOfMatrixElements>
 short Matrix<TypeOfMatrixElements>::GetMinimumRow()
 {
-    register int i, j;
+      int i, j;
     short min_row = 0;
 
     for(i = min_row + 1; i < rows; ++i)
@@ -752,7 +752,7 @@ short Matrix<TypeOfMatrixElements>::GetMinimumRow()
 template <class TypeOfMatrixElements>
 short Matrix<TypeOfMatrixElements>::GetMaximumRow()
 {
-    register int i, j;
+      int i, j;
     short max_row = 0;
 
     for(j = 0; j < columns; ++j)
@@ -768,7 +768,7 @@ short Matrix<TypeOfMatrixElements>::GetMaximumRow()
 template <class TypeOfMatrixElements>
 short Matrix<TypeOfMatrixElements>::HowManyNullRows()
 {
-    register int i, j;
+      int i, j;
     bool is_null = true;
     short null_rows = 0;
 
@@ -790,7 +790,7 @@ short Matrix<TypeOfMatrixElements>::HowManyNullRows()
 template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::HasSameRows()
 {
-    register int i, j, k;
+      int i, j, k;
     bool find_same = true;
 
     for(i = 0, find_same = true; i < rows; ++i)
@@ -808,7 +808,7 @@ bool Matrix<TypeOfMatrixElements>::HasSameRows()
 template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::HasSameColumns()
 {
-    register int i, j, k;
+      int i, j, k;
     bool find_same = true;
 
     for(i = 0, find_same = true; i < columns; ++i)
@@ -826,7 +826,7 @@ bool Matrix<TypeOfMatrixElements>::HasSameColumns()
 template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::HasNullRows()
 {
-    register int i, j;
+      int i, j;
     bool is_null;
 
     for(i = 0, is_null = true; i < rows; ++i)
@@ -841,7 +841,7 @@ bool Matrix<TypeOfMatrixElements>::HasNullRows()
 template <class TypeOfMatrixElements>
 bool Matrix<TypeOfMatrixElements>::HasNullColumns()
 {
-    register int i, j;
+      int i, j;
     bool is_null;
 
     for(i = 0, is_null = true; i < columns; ++i)
@@ -869,7 +869,7 @@ bool Matrix<TypeOfMatrixElements>::operator == (const Matrix<TypeOfMatrixElement
         if(rows == comparable_matrix.rows && columns == comparable_matrix.columns)
         {
             bool iscompare = true;
-            register int i, j;
+              int i, j;
             for(i = 0; i < rows; ++i)
                 for(j = 0; j < columns; ++j)
                     iscompare = (elements[i][j] == comparable_matrix.elements[i][j]) ? iscompare : false;
@@ -894,7 +894,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator + (Matrix<Ty
     if(rows == addable_matrix.rows && columns == addable_matrix.columns)
     {
         Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
-        register int i, j;
+          int i, j;
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
                 temp.elements[i][j] = elements[i][j] + addable_matrix.elements[i][j];
@@ -912,7 +912,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator - (Matrix<Ty
     if(rows == deductible_matrix.rows && columns == deductible_matrix.columns)
     {
         Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
-        register int i, j;
+          int i, j;
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
                 temp.elements[i][j] = elements[i][j] - deductible_matrix.elements[i][j];
@@ -930,7 +930,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator * (Matrix<Ty
     if(rows == multiplier_matrix.rows && columns == multiplier_matrix.columns)
     {
         Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
-        register int i, j;
+          int i, j;
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
                 temp.elements[i][j] = elements[i][j] * multiplier_matrix.elements[i][j];
@@ -948,7 +948,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator / (Matrix<Ty
     if(rows == divisor_matrix.rows && columns == divisor_matrix.columns)
     {
         Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
-        register int i, j;
+          int i, j;
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
                 temp.elements[i][j] = elements[i][j] / divisor_matrix.elements[i][j];
@@ -966,7 +966,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator % (Matrix<Ty
     if(rows == divisor_matrix.rows && columns == divisor_matrix.columns)
     {
         Matrix<TypeOfMatrixElements> temp("TEMP", rows, columns);
-        register int i, j;
+          int i, j;
         for(i = 0; i < rows; ++i)
             for(j = 0; j < columns; ++j)
                 temp.elements[i][j] = elements[i][j] % divisor_matrix.elements[i][j];
@@ -981,7 +981,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::operator % (Matrix<Ty
 template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Matrix<TypeOfMatrixElements>& equalable_matrix)
 {
-    register int i, j;
+      int i, j;
 
     ResestIfNotEmpty();
 
@@ -1082,7 +1082,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator + (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& addable_element)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] + addable_element;
@@ -1093,7 +1093,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator + (const TypeOfMatrixElements& addable_element, const Matrix<TypeOfMatrixElements>& base_matrix)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] + addable_element;
@@ -1104,7 +1104,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator - (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& deductible_element)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] - deductible_element;
@@ -1115,7 +1115,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator - (const TypeOfMatrixElements& deductible_element, const Matrix<TypeOfMatrixElements>& base_matrix)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = deductible_element - base_matrix.elements[i][j];
@@ -1126,7 +1126,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator * (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& multiplier_element)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] * multiplier_element;
@@ -1137,7 +1137,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator * (const TypeOfMatrixElements& multiplier_element, const Matrix<TypeOfMatrixElements>& base_matrix)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] * multiplier_element;
@@ -1148,7 +1148,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator / (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& divisor_element)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] / divisor_element;
@@ -1159,7 +1159,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator / (const TypeOfMatrixElements& divisor_element, const Matrix<TypeOfMatrixElements>& base_matrix)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = divisor_element / base_matrix.elements[i][j];
@@ -1170,7 +1170,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator % (const Matrix<TypeOfMatrixElements>& base_matrix, const TypeOfMatrixElements& divisor_element)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = base_matrix.elements[i][j] % divisor_element;
@@ -1181,7 +1181,7 @@ template <class TypeOfMatrixElements>
 Matrix<TypeOfMatrixElements> operator % (const TypeOfMatrixElements& divisor_element, const Matrix<TypeOfMatrixElements>& base_matrix)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", base_matrix.rows, base_matrix.columns);
-    register int i, j;
+      int i, j;
     for(i = 0; i < temp.rows; ++i)
         for(j = 0; j < temp.columns; ++j)
             temp.elements[i][j] = divisor_element % base_matrix.elements[i][j];
