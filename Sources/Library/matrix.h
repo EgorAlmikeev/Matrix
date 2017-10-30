@@ -38,7 +38,7 @@ public :
         MatrixArithmeticException(Matrix *culprit, situation s, errorflag f) : culprit_1(culprit), culprit_2(nullptr), sit(s), flag(f)
         {}
 
-        inline void errmsg()
+        inline void print_message()
         {
             switch(sit)
             {
@@ -67,7 +67,6 @@ public :
                              << "[" << culprit_1->rows << "][" << culprit_1->columns << "] and "
                              << "\"" << culprit_2->name << "\""
                              << "[" << culprit_2->rows << "][" << culprit_2->columns << "]\n";
-            exit(1);
         }
 
         inline void errormsg_one_culprit()
@@ -82,7 +81,6 @@ public :
 
             STD_ERROR_STREAM << "\n#matrix error [arithmetic] : " << what_happened << "\"" << culprit_1->name << "\""
                              << "[" << culprit_1->rows << "][" << culprit_1->columns << "]\n";
-            exit(1);
         }
     };
     class MatrixAccessException
@@ -98,7 +96,7 @@ public :
         MatrixAccessException(short first_place, short second_place, Matrix *culp, situation f) : place_1(first_place), place_2(second_place), culprit(culp), sit(f)
         {}
 
-        inline void errmsg()
+        inline void print_message()
         {
             switch(sit)
             {
@@ -106,8 +104,6 @@ public :
             case row_row : STD_ERROR_STREAM << "\n#matrix error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" ROW : " << place_1 << " ROW : " << place_2 << endl; break;
             case col_col : STD_ERROR_STREAM << "\n#matrix error [access] : ATTEMPT TO GAIN ACCESS TO MATRIX \"" << culprit->name << "\" COLUMN : " << place_1 << " COLUMN : " << place_2 << endl; break;
             }
-
-            exit(1);
         }
 
     };
@@ -139,11 +135,10 @@ public :
                 type_name = "unknown";
         }
 
-        inline void errmsg()
+        inline void print_message()
         {
             STD_ERROR_STREAM << "\n#matrix error [type] : TRYING TO CALL \"" << function_name << "\" FUNCTION "
                              << "WITH TYPE \"" << type_name << "\"\n";
-            exit(1);
         }
     };
 
@@ -163,6 +158,7 @@ public :
     TypeOfMatrixElements GetCompliment(short row, short column);
     TypeOfMatrixElements GetDeterminant();
     TypeOfMatrixElements& EditElement(short row, short column);
+    TypeOfMatrixElements& at(short row, short column);
 
     Matrix GetMinor(short row, short column);
     Matrix GetAdjoint();
@@ -718,6 +714,19 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short exclud
 
 template <class TypeOfMatrixElements>
 TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(short row, short column)
+{
+    if(row <= rows && row > 0 && column <= columns && column > 0)
+    {
+        return elements[row - 1][column - 1];
+    }
+    else
+    {
+        throw MatrixAccessException(row, column, this, MatrixAccessException::row_col);
+    }
+}
+
+template <class TypeOfMatrixElements>
+TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::at(short row, short column)
 {
     if(row <= rows && row > 0 && column <= columns && column > 0)
     {
