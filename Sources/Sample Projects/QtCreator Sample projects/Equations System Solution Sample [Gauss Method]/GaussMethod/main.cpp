@@ -20,29 +20,29 @@ int main()
         cin.ignore(10, '\n');
 
         Matrix<Type> original_matrix("Matrix", size_of_matrix, size_of_matrix + 1);
-        original_matrix.SetElements();
+        original_matrix.setElements();
 
         unsigned int start_time =  clock();
 
         Matrix<Type> cuted_matrix("CUTED");
         cuted_matrix = original_matrix;
 
-        cuted_matrix.Resize(size_of_matrix, size_of_matrix);
+        cuted_matrix.resize(size_of_matrix, size_of_matrix);
 
-        original_matrix.StairStep();
-        cuted_matrix.StairStep();
+        original_matrix.stairStep();
+        cuted_matrix.stairStep();
 
         cout << "\nStair step view : ";
-        original_matrix.Show();
+        original_matrix.show();
 
-        if(cuted_matrix.GetDeterminant() == 0)
+        if(cuted_matrix.getDeterminant() == 0)
         {
             cout << "\n\tThis system have no solutions...";
             cout << "\n\tEND OF PROGRAM...\n";
             return 0;
         }
 
-        if(original_matrix.GetRank() != cuted_matrix.GetRank())
+        if(original_matrix.getRank() != cuted_matrix.getRank())
         {
             cout << "\n\tRank of (A) matrix != rank of (A|B) matrix";
             cout << "\n\tEND OF PROGRAM...\n";
@@ -56,18 +56,18 @@ int main()
             unknown_elements[i] = 1;
 
         for(int i = 0; i < size_of_matrix; ++i)
-            right_part[i] = original_matrix.EditElement(i + 1, size_of_matrix + 1);
+            right_part[i] = original_matrix.at(i + 1, size_of_matrix + 1);
 
 
-        unknown_elements[size_of_matrix - 1] = right_part[size_of_matrix - 1] / original_matrix.EditElement(size_of_matrix, size_of_matrix);
+        unknown_elements[size_of_matrix - 1] = right_part[size_of_matrix - 1] / original_matrix.at(size_of_matrix, size_of_matrix);
 
         for(int i = size_of_matrix - 2; i >= 0; --i)
         {
             Type sum = 0;
-            Type coefficient = original_matrix.EditElement(i + 1, i + 1);
+            Type coefficient = original_matrix.at(i + 1, i + 1);
 
             for(int j = i + 1; j < size_of_matrix; ++j)
-                sum += original_matrix.EditElement(i + 1, j + 1) * unknown_elements[j];
+                sum += original_matrix.at(i + 1, j + 1) * unknown_elements[j];
 
             unknown_elements[i] = (right_part[i] - sum) / coefficient;
         }
@@ -81,15 +81,15 @@ int main()
     }
     catch(Matrix<Type>::MatrixAccessException exp)
     {
-        exp.errmsg();
+        exp.print_message();
     }
     catch(Matrix<Type>::MatrixArithmeticException exp)
     {
-        exp.errmsg();
+        exp.print_message();
     }
     catch(Matrix<Type>::MatrixTypeException exp)
     {
-        exp.errmsg();
+        exp.print_message();
     }
 
     cout << "\n\tEND OF PROGRAM...\n";

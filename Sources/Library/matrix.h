@@ -142,28 +142,28 @@ public :
         }
     };
 
-    void Show();
-    void SetElements();
-    void ResestIfNotEmpty();
+    void show();
+    void setElements();
+    void resestIfNotEmpty();
 
-    bool HasSameRows();
-    bool HasSameColumns();
-    bool HasNullRows();
-    bool HasNullColumns();
+    bool hasSameRows();
+    bool hasSameColumns();
+    bool hasNullRows();
+    bool hasNullColumns();
     bool operator == (const Matrix& comparable_matrix);
 
-    short GetRank();
-    short HowManyNullRows();
+    short getRank();
+    short howManyNullRows();
 
-    TypeOfMatrixElements GetCompliment(short row, short column);
-    TypeOfMatrixElements GetDeterminant();
-    TypeOfMatrixElements& EditElement(short row, short column);
+    TypeOfMatrixElements getCompliment(short row, short column);
+    TypeOfMatrixElements getDeterminant();
+    TypeOfMatrixElements& editElement(short row, short column);
     TypeOfMatrixElements& at(short row, short column);
 
-    Matrix GetMinor(short row, short column);
-    Matrix GetAdjoint();
-    Matrix GetReverse();
-    Matrix Multiplicate(Matrix& multiplier_matrix);
+    Matrix getMinor(short row, short column);
+    Matrix getAdjoint();
+    Matrix getReverse();
+    Matrix multiplicate(Matrix& multiplier_matrix);
 
     Matrix operator + (Matrix& addable_matrix);
     Matrix operator - (Matrix& deductible_matrix);
@@ -171,12 +171,12 @@ public :
     Matrix operator / (Matrix& divisor_matrix);
     Matrix operator % (Matrix& divisor_matrix);
 
-    Matrix& Transpose();
-    Matrix& StairStep();
-    Matrix& SwapRows(short row_a, short row_b);
-    Matrix& SwapColumns(short column_a, short column_b);
-    Matrix& SetFill(TypeOfMatrixElements fill_element);
-    Matrix& Resize(short new_rows, short new_columns);
+    Matrix& transpose();
+    Matrix& stairStep();
+    Matrix& swapRows(short row_a, short row_b);
+    Matrix& swapColumns(short column_a, short column_b);
+    Matrix& fill(TypeOfMatrixElements fill_element);
+    Matrix& resize(short new_rows, short new_columns);
 
     Matrix& operator = (const Matrix& equalable_matrix);
     Matrix& operator += (const Matrix& addable_matrix);
@@ -228,9 +228,9 @@ private :
 
     TypeOfMatrixElements **elements;
 
-    short GetMinimumRow();
-    short GetMaximumRow();
-    short GetLongestElementSize();
+    short getMinimumRow();
+    short getMaximumRow();
+    short getLongestElementLength();
 };
 
 //constructors & destructors
@@ -258,7 +258,7 @@ Matrix<TypeOfMatrixElements>::Matrix(Matrix<TypeOfMatrixElements>& copying_matri
 {
       int i, j;
 
-    ResestIfNotEmpty();
+    resestIfNotEmpty();
 
     try
     {
@@ -318,7 +318,7 @@ Matrix<TypeOfMatrixElements>::~Matrix()
 //functions
 
 template <class TypeOfMatrixElements>
-short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
+short Matrix<TypeOfMatrixElements>::getLongestElementLength()
 {
     short longest_element_size = 2;
     bool sign = false;
@@ -369,7 +369,7 @@ short Matrix<TypeOfMatrixElements>::GetLongestElementSize()
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::Show()
+void Matrix<TypeOfMatrixElements>::show()
 {
     STD_OUT_STREAM << "\n\nMatrix \"" << name << "\" [" << rows << "][" << columns << "] : ";
     STD_OUT_STREAM << setiosflags(ios::right);
@@ -382,7 +382,7 @@ void Matrix<TypeOfMatrixElements>::Show()
         STD_OUT_STREAM << setiosflags(ios::fixed) << setprecision(1);
 
       int i, j;
-    short printable_size = this->GetLongestElementSize();
+    short printable_size = this->getLongestElementLength();
 
     for(i = 0; i < rows; ++i)
     {
@@ -395,7 +395,7 @@ void Matrix<TypeOfMatrixElements>::Show()
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::SetElements()
+void Matrix<TypeOfMatrixElements>::setElements()
 {
       int i, j;
 
@@ -431,7 +431,7 @@ void Matrix<TypeOfMatrixElements>::SetElements()
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::transpose()
 {
       int i, j;
     for(i = 0; i < rows; ++i)
@@ -442,12 +442,12 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Transpose()
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::stairStep()
 {
       int i, j, k;
 
     if(elements[0][0] == 0)
-        SwapRows(1, GetMaximumRow());
+        swapRows(1, getMaximumRow());
 
     k = 0;
 
@@ -470,7 +470,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::StairStep()
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapRows(short row_a, short row_b)
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::swapRows(short row_a, short row_b)
 {
     --row_a;
     --row_b;
@@ -488,7 +488,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapRows(short row_a
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapColumns(short column_a, short column_b)
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::swapColumns(short column_a, short column_b)
 {
       int i, j;
 
@@ -510,7 +510,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SwapColumns(short co
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SetFill(TypeOfMatrixElements fill_element)
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::fill(TypeOfMatrixElements fill_element)
 {
       int i, j;
     for(i = 0; i < rows; ++i)
@@ -520,7 +520,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::SetFill(TypeOfMatrix
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Resize(short new_rows, short new_columns)
+Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::resize(short new_rows, short new_columns)
 {
     Matrix<TypeOfMatrixElements> temp("TEMP", new_rows, new_columns);
       int i, j;
@@ -562,7 +562,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::Resize(short new_row
 }
 
 template <class TypeOfMatrixElements>
-void Matrix<TypeOfMatrixElements>::ResestIfNotEmpty()
+void Matrix<TypeOfMatrixElements>::resestIfNotEmpty()
 {
     if(rows != 0 && columns != 0 && elements != nullptr)
     {
@@ -575,26 +575,26 @@ void Matrix<TypeOfMatrixElements>::ResestIfNotEmpty()
 }
 
 template <class TypeOfMatrixElements>
-TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetCompliment(short row, short column)
+TypeOfMatrixElements Matrix<TypeOfMatrixElements>::getCompliment(short row, short column)
 {
-    return pow(-1, row + column) * GetMinor(row, column).GetDeterminant();
+    return pow(-1, row + column) * getMinor(row, column).getDeterminant();
 }
 
 template <class TypeOfMatrixElements>
-TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
+TypeOfMatrixElements Matrix<TypeOfMatrixElements>::getDeterminant()
 {
      if(rows != columns)
          throw MatrixArithmeticException(this, MatrixArithmeticException::culprit_x1, MatrixArithmeticException::determinant);
 
      if(rows >= 4 && columns >= 4)
      {
-         if(HasSameRows() || HasSameColumns() || HasNullRows() || HasNullColumns())
+         if(hasSameRows() || hasSameColumns() || hasNullRows() || hasNullColumns())
              return 0;
 
          TypeOfMatrixElements determinant = 0;
 
          for(int j = 0; j < columns; ++j)
-             determinant += elements[0][j] * pow(-1, 1 + j + 1) * GetMinor(1, j + 1).GetDeterminant();
+             determinant += elements[0][j] * pow(-1, 1 + j + 1) * getMinor(1, j + 1).getDeterminant();
          return determinant;
      }
      else if(rows == 3 && columns == 3)
@@ -617,17 +617,17 @@ TypeOfMatrixElements Matrix<TypeOfMatrixElements>::GetDeterminant()
 }
 
 template <class TypeOfMatrixElements>
-short Matrix<TypeOfMatrixElements>::GetRank()
+short Matrix<TypeOfMatrixElements>::getRank()
 {
     Matrix<TypeOfMatrixElements> temp("TEMP");
     temp = *this;
-    temp.StairStep();
+    temp.stairStep();
 
-    return temp.rows - temp.HowManyNullRows();
+    return temp.rows - temp.howManyNullRows();
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetReverse()
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::getReverse()
 {
     if(
             typeid(TypeOfMatrixElements) == typeid(float) ||
@@ -636,17 +636,17 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetReverse()
       )
     {
         Matrix<TypeOfMatrixElements> reverse_matrix("REVERSE", rows, columns);
-        reverse_matrix = GetAdjoint() / GetDeterminant();
+        reverse_matrix = getAdjoint() / getDeterminant();
         return reverse_matrix;
     }
     else
     {
-        throw MatrixTypeException("GetReverse()", typeid(TypeOfMatrixElements).name());
+        throw MatrixTypeException("getReverse()", typeid(TypeOfMatrixElements).name());
     }
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::Multiplicate(Matrix<TypeOfMatrixElements>& multiplier_matrix)
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::multiplicate(Matrix<TypeOfMatrixElements>& multiplier_matrix)
 {
     if(columns == multiplier_matrix.rows)
     {
@@ -669,18 +669,18 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::Multiplicate(Matrix<T
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetAdjoint()
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::getAdjoint()
 {
     Matrix<TypeOfMatrixElements> adjoint_matrix("ADJOINT", rows, columns);
       int i, j;
     for(i = 0; i < rows; ++i)
         for(j = 0; j < columns; ++j)
-            adjoint_matrix.EditElement(i + 1, j + 1) = GetCompliment(j + 1, i + 1);
+            adjoint_matrix.editElement(i + 1, j + 1) = getCompliment(j + 1, i + 1);
     return adjoint_matrix;
 }
 
 template <class TypeOfMatrixElements>
-Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short excluded_row, short excluded_column)
+Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::getMinor(short excluded_row, short excluded_column)
 {
     Matrix<TypeOfMatrixElements> minor_matrix("MINOR", rows - 1, columns - 1);
       int i = 0, j = 0, minor_row = 0, minor_column = 0;
@@ -713,7 +713,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::GetMinor(short exclud
 }
 
 template <class TypeOfMatrixElements>
-TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::EditElement(short row, short column)
+TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::editElement(short row, short column)
 {
     if(row <= rows && row > 0 && column <= columns && column > 0)
     {
@@ -739,7 +739,7 @@ TypeOfMatrixElements& Matrix<TypeOfMatrixElements>::at(short row, short column)
 }
 
 template <class TypeOfMatrixElements>
-short Matrix<TypeOfMatrixElements>::GetMinimumRow()
+short Matrix<TypeOfMatrixElements>::getMinimumRow()
 {
       int i, j;
     short min_row = 0;
@@ -759,7 +759,7 @@ short Matrix<TypeOfMatrixElements>::GetMinimumRow()
 }
 
 template <class TypeOfMatrixElements>
-short Matrix<TypeOfMatrixElements>::GetMaximumRow()
+short Matrix<TypeOfMatrixElements>::getMaximumRow()
 {
       int i, j;
     short max_row = 0;
@@ -775,7 +775,7 @@ short Matrix<TypeOfMatrixElements>::GetMaximumRow()
 }
 
 template <class TypeOfMatrixElements>
-short Matrix<TypeOfMatrixElements>::HowManyNullRows()
+short Matrix<TypeOfMatrixElements>::howManyNullRows()
 {
       int i, j;
     bool is_null = true;
@@ -797,7 +797,7 @@ short Matrix<TypeOfMatrixElements>::HowManyNullRows()
 //functions/bool
 
 template <class TypeOfMatrixElements>
-bool Matrix<TypeOfMatrixElements>::HasSameRows()
+bool Matrix<TypeOfMatrixElements>::hasSameRows()
 {
       int i, j, k;
     bool find_same = true;
@@ -815,7 +815,7 @@ bool Matrix<TypeOfMatrixElements>::HasSameRows()
 }
 
 template <class TypeOfMatrixElements>
-bool Matrix<TypeOfMatrixElements>::HasSameColumns()
+bool Matrix<TypeOfMatrixElements>::hasSameColumns()
 {
       int i, j, k;
     bool find_same = true;
@@ -833,7 +833,7 @@ bool Matrix<TypeOfMatrixElements>::HasSameColumns()
 }
 
 template <class TypeOfMatrixElements>
-bool Matrix<TypeOfMatrixElements>::HasNullRows()
+bool Matrix<TypeOfMatrixElements>::hasNullRows()
 {
       int i, j;
     bool is_null;
@@ -845,10 +845,12 @@ bool Matrix<TypeOfMatrixElements>::HasNullRows()
         if(is_null)
             return is_null;
     }
+
+    return false;
 }
 
 template <class TypeOfMatrixElements>
-bool Matrix<TypeOfMatrixElements>::HasNullColumns()
+bool Matrix<TypeOfMatrixElements>::hasNullColumns()
 {
       int i, j;
     bool is_null;
@@ -860,6 +862,8 @@ bool Matrix<TypeOfMatrixElements>::HasNullColumns()
         if(is_null)
             return is_null;
     }
+
+    return false;
 }
 
 template <class TypeOfMatrixElements>
@@ -992,7 +996,7 @@ Matrix<TypeOfMatrixElements>& Matrix<TypeOfMatrixElements>::operator = (const Ma
 {
       int i, j;
 
-    ResestIfNotEmpty();
+    resestIfNotEmpty();
 
     try
     {

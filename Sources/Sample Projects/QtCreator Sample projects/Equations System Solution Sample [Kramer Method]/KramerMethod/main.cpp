@@ -31,20 +31,20 @@ int main()
         Matrix<Type> matrix("A", rows, columns);
 
         cout << "\n\n\tSet all elements with the right part of the system :\n";
-        matrix.SetElements();
+        matrix.setElements();
 
         cout << "Matrix at start : ";
-        matrix.Show();
+        matrix.show();
 
         Matrix<Type> original_determinant_matrix("ORIGIN DET TEMP");
         original_determinant_matrix = matrix;
 
-        original_determinant_matrix.Resize(rows, columns - 1);
+        original_determinant_matrix.resize(rows, columns - 1);
 
         cout << "\n\nOriginal determinant matrix : ";
-        original_determinant_matrix.Show();
+        original_determinant_matrix.show();
 
-        determinant = original_determinant_matrix.GetDeterminant();
+        determinant = original_determinant_matrix.getDeterminant();
         cout << "\n\nDeterminant : " << determinant;
 
         if(determinant == 0)
@@ -62,13 +62,13 @@ int main()
             Matrix<Type> temp("TEMP");
             temp = matrix;
 
-            temp.SwapColumns(i + 1, columns);
-            temp.Resize(rows, columns - 1);
+            temp.swapColumns(i + 1, columns);
+            temp.resize(rows, columns - 1);
 
             cout << "\n\nTemp matrix : ";
-            temp.Show();
+            temp.show();
 
-            Type temp_determinant = temp.GetDeterminant();
+            Type temp_determinant = temp.getDeterminant();
             solutions.push_back(temp_determinant);
 
             cout << "\n\nTemp determinant #" << i + 1 << " : " << temp_determinant << endl;
@@ -76,15 +76,15 @@ int main()
     }
     catch(Matrix<Type>::MatrixAccessException exp)
     {
-        exp.errmsg();
+        exp.print_message();
     }
     catch(Matrix<Type>::MatrixArithmeticException exp)
     {
-        exp.errmsg();
+        exp.print_message();
     }
     catch(Matrix<Type>::MatrixTypeException exp)
     {
-        exp.errmsg();
+        exp.print_message();
     }
 
     vector<Type>::iterator iter;
