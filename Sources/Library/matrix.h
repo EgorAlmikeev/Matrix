@@ -656,7 +656,7 @@ Matrix<TypeOfMatrixElements> Matrix<TypeOfMatrixElements>::multiplicate(Matrix<T
             for(j = 0; j < multiplier_matrix.columns; ++j)
             {
                 TypeOfMatrixElements sum = 0;
-                for(k = 0; k < rows; ++k)
+                for(k = 0; k < columns; ++k)
                     sum += elements[i][k] * multiplier_matrix.elements[k][j];
                 temp.elements[i][j] = sum;
             }
